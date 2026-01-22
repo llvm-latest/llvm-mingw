@@ -344,7 +344,7 @@ if [ -n "$MACOS_REDIST" ]; then
 else
     ARCH="${HOST%%-*}"
 
-    if [[ "$ARCH" == "x86_64" || "$ARCH" == "i686" ]]; then
+    if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "i686" ]; then
         CMAKE_C_FLAGS="-msse4.2"
         CMAKE_CXX_FLAGS="-msse4.2"
     else
