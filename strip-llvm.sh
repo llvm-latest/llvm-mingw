@@ -142,11 +142,18 @@ rm -rf opt-viewer scan-build scan-view
 rm -rf man/man1/scan-build*
 cd ..
 cd include
-rm -rf clang clang-c clang-tidy lld llvm llvm-c lldb
+rm -rf clang-tidy lld lldb
 cd ..
 cd lib
-rm -f *.dll.a
-rm -f lib*.a
+for i in *.dll.a lib*.a; do
+    case $i in
+    libclang-cpp*|libLLVM-[0-9]*)
+        ;;
+    *)
+        rm -rf $i
+        ;;
+    esac
+done
 for i in *.so* *.dylib* cmake; do
     case $i in
     liblldb*|libclang-cpp*|libLLVM*)

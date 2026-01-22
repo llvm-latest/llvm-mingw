@@ -22,6 +22,7 @@ ASSERTS=OFF
 unset HOST
 BUILDDIR="build"
 LINK_DYLIB=ON
+FULL_LLVM=1
 ASSERTSSUFFIX=""
 LLDB=ON
 CLANG_TOOLS_EXTRA=ON
@@ -323,6 +324,20 @@ if [ -n "$MACOS_REDIST" ]; then
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
     fi
+
+    # TODO: for x86_64, neon on arm64 is enabled by default
+    CMAKE_C_FLAGS=""
+    CMAKE_CXX_FLAGS=""
+else
+    ARCH="${HOST%%-*}"
+
+    if [[ "$ARCH" == "x86_64" || "$ARCH" == "i686" ]]; then
+        CMAKE_C_FLAGS="-msse4.2"
+        CMAKE_CXX_FLAGS="-msse4.2"
+    else
+        CMAKE_C_FLAGS=""
+        CMAKE_CXX_FLAGS=""
+    fi
 fi
 
 if [ -z "$HOST" ] && [ "$(uname)" = "Darwin" ]; then
@@ -397,10 +412,12 @@ cmake \
     ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_C_FLAGS="$CMAKE_C_FLAGS" \
+    -DCMAKE_CXX_FLAGS="$CMAKE_CXX_FLAGS" \
     -DLLVM_ENABLE_ASSERTIONS=$ASSERTS \
     -DLLVM_ENABLE_PROJECTS="$PROJECTS" \
     -DLLVM_ENABLE_BINDINGS=OFF \
-    -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86;NVPTX" \
+    -DLLVM_TARGETS_TO_BUILD="ARM;AArch64;X86" \
     -DLLVM_INSTALL_TOOLCHAIN_ONLY=$TOOLCHAIN_ONLY \
     -DLLVM_LINK_LLVM_DYLIB=$LINK_DYLIB \
     -DLLVM_TOOLCHAIN_TOOLS="llvm-ar;llvm-ranlib;llvm-objdump;llvm-rc;llvm-cvtres;llvm-nm;llvm-strings;llvm-readobj;llvm-dlltool;llvm-pdbutil;llvm-objcopy;llvm-strip;llvm-cov;llvm-profdata;llvm-addr2line;llvm-symbolizer;llvm-windres;llvm-ml;llvm-readelf;llvm-size;llvm-cxxfilt;llvm-lib" \

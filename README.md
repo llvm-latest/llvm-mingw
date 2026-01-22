@@ -1,3 +1,15 @@
+This Fork
+==========
+
+__Add some missing features and improvements.__
+
+- Support llvm/clang plugins
+  - Add missing `llvm/llvm-c/clang/clang-c` headers at `include` directory
+  - Add missing `libclang-cpp.dll.a` and `libLLVM-*.dll.a` import libraries for windows at `lib` directory
+- Compile with `SSE4.2` (for x86) by default
+- Remove LLVM `NVPTX` target support
+
+
 LLVM MinGW
 ==========
 
