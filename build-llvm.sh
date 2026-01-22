@@ -173,6 +173,18 @@ else
     esac
 fi
 
+# use mold linker by default on Linux
+if [ -n "$HOST" ]; then
+    case $HOST in
+    *-linux*)
+        if [ -z "${USE_LINKER:-}" ]; then
+            USE_LINKER="mold"
+        fi
+    *)
+        ;;
+    esac
+fi
+
 if command -v ninja >/dev/null; then
     CMAKE_GENERATOR="Ninja"
 else

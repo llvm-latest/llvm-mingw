@@ -45,6 +45,7 @@ jobs:
     needs: [prepare]
     runs-on: ubuntu-latest
     steps:
+      - uses: rui314/setup-mold@v1
       - uses: actions/checkout@v4
         with:
           ref: ${{github.event_name == 'workflow_dispatch' && inputs.ref || 'master'}}
@@ -94,6 +95,7 @@ jobs:
           - { arch: i686, crt: msvcrt }
           - { arch: x86_64, crt: msvcrt }
     steps:
+      - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: linux-${{matrix.crt}}-x86_64-toolchain
@@ -175,6 +177,7 @@ jobs:
           install: >-
             unzip
             make
+      # - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: windows-${{matrix.crt}}-${{matrix.arch}}-toolchain
