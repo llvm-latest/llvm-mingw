@@ -174,16 +174,10 @@ else
 fi
 
 # use mold linker by default on Linux
-if [ -n "$HOST" ]; then
-    case $HOST in
-    *-linux*)
-        if [ -z "${USE_LINKER:-}" ]; then
-            USE_LINKER="mold"
-        fi
-        ;;
-    *)
-        ;;
-    esac
+if [ "$(uname)" = "Linux" ]; then
+    if [ -z "${USE_LINKER:-}" ]; then
+        USE_LINKER="mold"
+    fi
 fi
 
 if command -v ninja >/dev/null; then
