@@ -175,8 +175,7 @@ fi
 
 # use mold linker by default on Linux and macOS
 if [ -z "${USE_LINKER:-}" ]; then
-    host = "$(uname)"
-    if [ "$host" = "Linux" ] || [ "$host" = "Darwin" ]; then
+    if [ "$(uname)" = "Linux" ] || [ "$(uname)" = "Darwin" ]; then
         USE_LINKER="mold"
     # elif [ -n "$TARGET_WINDOWS" ]; then
     #     USE_LINKER="mold"
