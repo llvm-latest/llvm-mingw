@@ -72,8 +72,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: ./install-dependencies.sh
@@ -110,8 +112,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: ./install-dependencies.sh
@@ -147,8 +151,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: ./install-dependencies.sh
@@ -197,8 +203,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: ./install-dependencies.sh
@@ -261,8 +269,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Install Dependencies
         run: ./install-dependencies.sh
@@ -445,8 +455,10 @@ jobs:
           - { arch: armv7, crt: ucrt }
           - { arch: aarch64, crt: ucrt }
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-${{matrix.crt}}-x86_64-toolchain

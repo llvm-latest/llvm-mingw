@@ -46,8 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/checkout@v4
         with:
           ref: ${{github.event_name == 'workflow_dispatch' && inputs.ref || 'master'}}
@@ -101,8 +103,10 @@ jobs:
           - { arch: i686, crt: msvcrt }
           - { arch: x86_64, crt: msvcrt }
     steps:
-      - name: Setup Git Retry
-        run: git config --global http.retry 5
+      - name: Setup Environment
+        run: |
+          sudo apt-get update && sudo apt-get install -y git
+          git config --global http.retry 5
       - uses: actions/download-artifact@v4
         with:
           name: linux-${{matrix.crt}}-x86_64-toolchain
