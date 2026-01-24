@@ -72,12 +72,12 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
@@ -110,12 +110,12 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -147,12 +147,12 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -197,12 +197,12 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -261,12 +261,12 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:devel
     steps:
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
@@ -445,9 +445,6 @@ jobs:
           - { arch: armv7, crt: ucrt }
           - { arch: aarch64, crt: ucrt }
     steps:
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
         run: git config --global http.retry 5
       - uses: actions/download-artifact@v4
@@ -460,6 +457,9 @@ jobs:
           sudo mv llvm-mingw* /opt/llvm-mingw
           echo /opt/llvm-mingw/bin >> $GITHUB_PATH
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: profile
