@@ -185,7 +185,8 @@ if [ -z "${USE_LINKER:-}" ]; then
 fi
 
 # build LLVM gold plugin `LLVMgold.so` on Linux
-if [ "$(uname)" = "Linux" ]; then
+# but not for corss build to windows on Linux
+if [ "$(uname)" = "Linux" ] && [ -z "$TARGET_WINDOWS" ]; then
     BINUTILS_INCDIR="/usr/include"
 else
     BINUTILS_INCDIR=""
