@@ -10,6 +10,7 @@ __Add some missing features and improvements.__
 - Compile with `SSE4.2` (for x86) by default
 - Use `mold` linker by default on Linux
 - Build LLVM gold plugin `LLVMgold.so` for Linux at `lib` directory
+- Use latest ubuntu docker containers `ubuntu:devel` for building
 
 LLVM MinGW
 ==========
@@ -36,7 +37,7 @@ binutils with LLVM based tools.
 Releases
 --------
 
-The [GitHub Releases](https://github.com/mstorsjo/llvm-mingw/releases)
+The [GitHub Releases](https://github.com/llvm-latest/llvm-mingw/releases)
 page contains prebuilt toolchains that can be downloaded and installed
 by just unpacking them.
 

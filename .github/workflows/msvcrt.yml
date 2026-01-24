@@ -44,6 +44,7 @@ jobs:
   linux-msvcrt:
     needs: [prepare]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     steps:
       - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
@@ -90,6 +91,7 @@ jobs:
   linux-cross-windows:
     needs: [linux-msvcrt, prepare]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     strategy:
       fail-fast: false
       matrix:

@@ -70,6 +70,7 @@ jobs:
   linux-stage1:
     needs: [prepare]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     steps:
       - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
@@ -105,6 +106,7 @@ jobs:
   linux-profile:
     needs: [prepare, linux-stage1]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     steps:
       - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
@@ -139,6 +141,7 @@ jobs:
   linux:
     needs: [prepare, linux-stage1, linux-profile]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     steps:
       - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
@@ -186,6 +189,7 @@ jobs:
   linux-cross-aarch64:
     needs: [linux-stage1, linux-profile, prepare]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     steps:
       - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
@@ -247,6 +251,7 @@ jobs:
     if: github.event_name == 'schedule'
     needs: [prepare]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     steps:
       - uses: rui314/setup-mold@v1
       - name: Setup Git Retry
@@ -420,6 +425,7 @@ jobs:
   linux-cross-windows:
     needs: [linux-stage1, linux-profile, prepare]
     runs-on: ubuntu-latest
+    container: ubuntu:devel
     strategy:
       fail-fast: false
       matrix:
