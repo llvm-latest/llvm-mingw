@@ -8,6 +8,7 @@ apt-get install -qqy \
     build-essential binutils binutils-dev \
     clang lld llvm gcc g++ make cmake ninja-build \
     python3 python3-pip \
-    zip unzip xz-utils p7zip-full gettext autopoint less \
+    autoconf automake autopoint libtool pkg-config \
+    zip unzip xz-utils p7zip-full gettext less \
     nasm
 apt-get clean -y
