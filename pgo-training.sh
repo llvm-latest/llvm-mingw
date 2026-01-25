@@ -42,15 +42,23 @@ fi
 
 download() {
     if command -v curl >/dev/null; then
-        curl -LO "$1"
+        curl --retry 3 --retry-delay 5 --retry-all-errors -fSLO "$1"
     else
-        wget "$1"
+        wget -t 3 -w 5 "$1"
     fi
 }
 
 SQLITE=sqlite-amalgamation-$SQLITE_VERSION
 if [ ! -d $SQLITE ]; then
+    echo "Downloading sqlite-amalgamation-$SQLITE_VERSION.zip ..."
     download https://sqlite.org/$SQLITE_YEAR/sqlite-amalgamation-$SQLITE_VERSION.zip
+
+    if [ $? -ne 0 ]; then
+        echo "Error: Download sqlite-amalgamation-$SQLITE_VERSION.zip failed."
+        exit 1
+    fi
+
+    echo "Extracting sqlite-amalgamation-$SQLITE_VERSION.zip ..."
     unzip sqlite-amalgamation-$SQLITE_VERSION.zip
 fi
 

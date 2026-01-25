@@ -45,16 +45,24 @@ PREFIX="$(cd "$PREFIX" && pwd)"
 
 download() {
     if command -v curl >/dev/null; then
-        curl -LO "$1"
+        curl --retry 3 --retry-delay 5 --retry-all-errors -fSLO "$1"
     else
-        wget "$1"
+        wget -t 3 -w 5 "$1"
     fi
 }
 
 if [ ! -d make-$MAKE_VERSION ]; then
     if [ ! -e make-$MAKE_VERSION.tar.gz ]; then
+        echo "Downloading make-$MAKE_VERSION.tar.gz ..."
         download https://ftpmirror.gnu.org/gnu/make/make-$MAKE_VERSION.tar.gz
+
+        if [ $? -ne 0 ]; then
+            echo "Error: Download make-$MAKE_VERSION.tar.gz failed."
+            exit 1
+        fi
     fi
+
+    echo "Extracting make-$MAKE_VERSION.tar.gz ..."
     tar -zxf make-$MAKE_VERSION.tar.gz
 fi
 
