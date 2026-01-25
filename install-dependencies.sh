@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # Install Essential Tools
-DEBIAN_FRONTEND="noninteractive"
 apt-get update -qq
 apt-get install -qqy \
     wget curl software-properties-common \

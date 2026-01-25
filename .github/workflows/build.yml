@@ -13,6 +13,9 @@ on:
 permissions:
   contents: read
 
+env:
+  DEBIAN_FRONTEND: noninteractive
+
 jobs:
   # For scheduled builds, get the commit ids of the latest versions to build.
   #
