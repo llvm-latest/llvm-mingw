@@ -2,9 +2,9 @@ name: Test Container
 on:
   push:
     branches:
-      - '**'
+      - "**"
     paths:
-      - '.github/workflows/test-container.yml'
+      - ".github/workflows/test-container.yml"
   workflow_dispatch:
 
 permissions:
@@ -19,13 +19,30 @@ jobs:
     container:
       image: ubuntu:devel
       options: --privileged
-    services:
-      binfmt:
-        image: tonistiigi/binfmt
-        options: --privileged tonistiigi/binfmt
     steps:
-      - name: Check qemu
+      - name: Install Docker
+        run: |
+          apt-get update -qq && apt-get install -qqy docker.io
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@master
+        with:
+          image: tonistiigi/binfmt
+      - uses: actions/checkout@v4
+      - name: Test using the cross-built assembled toolchain
         run: |
           mount -t binfmt_misc none /proc/sys/fs/binfmt_misc
-          echo "bin formats:"
+          echo "ls /proc/sys/fs/binfmt_misc"
+          echo "=================================="
           ls /proc/sys/fs/binfmt_misc
+          echo "=================================="
+
+          apt install -qqy make curl zip unzip bzip2 xz-utils
+          LINUX_AARCH64_MINGW="https://github.com/mstorsjo/llvm-mingw/releases/download/20260116/llvm-mingw-20260116-ucrt-ubuntu-22.04-aarch64.tar.xz"
+          curl --retry 3 --retry-delay 5 --retry-all-errors -fSLO "$LINUX_AARCH64_MINGW"
+          tar -Jxf llvm-mingw-*.tar.xz
+          rm llvm-mingw-*.tar.xz
+          mv llvm-mingw* /opt/llvm-mingw
+
+          apt-get install -qqy qemu-user-static libc6-arm64-cross libstdc++6-arm64-cross
+          QEMU_LD_PREFIX=/usr/aarch64-linux-gnu ./test-libcxx-module.sh /opt/llvm-mingw
+          QEMU_LD_PREFIX=/usr/aarch64-linux-gnu ./run-tests.sh /opt/llvm-mingw
