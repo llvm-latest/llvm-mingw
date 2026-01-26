@@ -4,8 +4,7 @@ on:
     branches:
       - '**'
     paths:
-      - '.github/workflow/test-container.yml'
-  pull_request:
+      - '.github/workflows/test-container.yml'
   workflow_dispatch:
 
 permissions:
