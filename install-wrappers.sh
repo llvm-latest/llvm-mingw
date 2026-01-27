@@ -51,6 +51,7 @@ fi
 : ${CC:=cc}
 
 if [ -n "$HOST" ]; then
+    ARCH="${HOST%%-*}"
     case $HOST in
     *-mingw32)
         EXEEXT=.exe
@@ -102,12 +103,17 @@ if [ -n "${HOST_CLANG}" ]; then
     done
 fi
 
-if [ -n "$MACOS_REDIST" ]; then
-    : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
+if [ "$(uname)" = "Darwin" ]; then
+    if [ -n "$MACOS_REDIST" ]; then
+        : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
+        for arch in $MACOS_REDIST_ARCHS; do
+            WRAPPER_FLAGS="$WRAPPER_FLAGS -arch $arch"
+        done
+    else # single architecture
+        WRAPPER_FLAGS="$WRAPPER_FLAGS -arch $ARCH"
+    fi
+
     : ${MACOS_REDIST_VERSION:=10.12}
-    for arch in $MACOS_REDIST_ARCHS; do
-        WRAPPER_FLAGS="$WRAPPER_FLAGS -arch $arch"
-    done
     WRAPPER_FLAGS="$WRAPPER_FLAGS -mmacosx-version-min=$MACOS_REDIST_VERSION"
 fi
 

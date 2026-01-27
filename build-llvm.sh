@@ -235,6 +235,10 @@ if [ -n "$HOST" ]; then
     *-linux*)
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Linux"
         ;;
+    *-darwin)
+        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
+        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
+        ;;
     *)
         echo "Unrecognized host $HOST"
         exit 1
@@ -320,43 +324,46 @@ if [ -n "$LTO" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_LTO=$LTO"
 fi
 
-if [ -n "$MACOS_REDIST" ]; then
-    : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
-    : ${MACOS_REDIST_VERSION:=10.12}
-    ARCH_LIST=""
-    NATIVE=
-    for arch in $MACOS_REDIST_ARCHS; do
-        if [ -n "$ARCH_LIST" ]; then
-            ARCH_LIST="$ARCH_LIST;"
+CMAKE_C_FLAGS=""
+CMAKE_CXX_FLAGS=""
+
+if [ "$(uname)" = "Darwin" ]; then
+    if [ -n "$MACOS_REDIST" ]; then
+        : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
+        ARCH_LIST=""
+        NATIVE=
+        for arch in $MACOS_REDIST_ARCHS; do
+            if [ -n "$ARCH_LIST" ]; then
+                ARCH_LIST="$ARCH_LIST;"
+            fi
+            ARCH_LIST="$ARCH_LIST$arch"
+            if [ "$(uname -m)" = "$arch" ]; then
+                NATIVE=1
+            fi
+        done
+        if [ -z "$NATIVE" ]; then
+            # If we're not building for the native arch, flag to CMake that we're
+            # cross compiling, to let it build native versions of tools used
+            # during the build.
+            ARCH="$(echo $MACOS_REDIST_ARCHS | awk '{print $1}')"
+            CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
+            CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
         fi
-        ARCH_LIST="$ARCH_LIST$arch"
-        if [ "$(uname -m)" = "$arch" ]; then
-            NATIVE=1
+    else # single architecture
+        ARCH_LIST=$ARCH
+        if [ "$ARCH" = "x86_64" ]; then
+            CMAKE_C_FLAGS="-msse4.2"
+            CMAKE_CXX_FLAGS="-msse4.2"
         fi
-    done
-    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_ARCHITECTURES=$ARCH_LIST"
-    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_REDIST_VERSION"
-    if [ -z "$NATIVE" ]; then
-        # If we're not building for the native arch, flag to CMake that we're
-        # cross compiling, to let it build native versions of tools used
-        # during the build.
-        ARCH="$(echo $MACOS_REDIST_ARCHS | awk '{print $1}')"
-        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
-        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
     fi
 
-    # TODO: for x86_64, neon on arm64 is enabled by default
-    CMAKE_C_FLAGS=""
-    CMAKE_CXX_FLAGS=""
+    : ${MACOS_REDIST_VERSION:=10.12}
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_ARCHITECTURES=$ARCH_LIST"
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_REDIST_VERSION"
 else
-    ARCH="${HOST%%-*}"
-
     if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "i686" ]; then
         CMAKE_C_FLAGS="-msse4.2"
         CMAKE_CXX_FLAGS="-msse4.2"
-    else
-        CMAKE_C_FLAGS=""
-        CMAKE_CXX_FLAGS=""
     fi
 fi
 
