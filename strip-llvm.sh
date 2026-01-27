@@ -91,6 +91,8 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
             rm -f $i -v
         fi
         ;;
+    libclang.dll)
+        ;;
     llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper|llvm-windres|llvm-ml|llvm-readelf|llvm-size|llvm-cxxfilt|llvm-lib)
         ;;
     ld64.lld|wasm-ld)
@@ -149,7 +151,7 @@ cd ..
 cd lib
 for i in *.dll.a lib*.a; do
     case $i in
-    libclang-cpp*|liblldb*|libLLVM-[0-9]*)
+    libclang.dll.a|libclang-cpp*|liblldb*|libLLVM-[0-9]*)
         ;;
     *)
         rm -rf $i -v
@@ -158,7 +160,7 @@ for i in *.dll.a lib*.a; do
 done
 for i in *.so* *.dylib* cmake; do
     case $i in
-    libclang-cpp*|liblldb*|libLLVM*)
+    libclang.so*|libclang.dylib*|libclang-cpp*|liblldb*|libLLVM*)
         ;;
     LLVMgold*)
         ;;
