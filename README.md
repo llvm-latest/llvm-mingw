@@ -3,14 +3,15 @@ This Fork
 
 __Add some missing features and improvements.__
 
-- Support llvm/clang plugins
-  - Add missing `llvm/llvm-c/clang/clang-c` headers at `include` directory
-  - Add missing `libclang-cpp.dll.a` and `libLLVM-*.dll.a` import libraries for Windows at `lib` directory
-- Remove LLVM `NVPTX` target support
+- Support LLVM/Clang/LLDB/Clang-Tidy plugins
+  - Add missing `llvm/llvm-c/clang/clang-c/lldb/clang-tidy` headers at `include` directory
+  - Add missing import libraries for Windows at `lib` directory
+- Support building single-architecture macOS binaries
 - Compile with `SSE4.2` (for x86) by default
 - Use `mold` linker by default on Linux
 - Build LLVM gold plugin `LLVMgold.so` for Linux at `lib` directory
-- Use latest ubuntu docker containers `ubuntu:devel` for building
+- Remove LLVM `NVPTX` target support
+- CI: Use latest ubuntu docker containers `ubuntu:devel` for building
 
 LLVM MinGW
 ==========

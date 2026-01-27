@@ -53,6 +53,8 @@ MINGW*)
     ;;
 esac
 
+echo "===== Stripping LLVM ====="
+
 cd bin
 for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug diagtool dsymutil find-all-symbols git-clang-format hmaptool ld64.lld* llc lldb-* lli llvm-* modularize nvptx-arch obj2yaml offload-arch opt pp-trace sancov sanstats scan-build scan-view split-file verify-uselistorder wasm-ld yaml2* libclang.dll *LTO.dll *Remarks.dll *.bat; do
     basename=$i
@@ -86,24 +88,24 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
         # was a plain number (as if the original name was clang-7); if it wasn't
         # empty, remove the tool.
         if [ "$(echo $suffix | tr -d '[0-9]')" != "" ]; then
-            rm -f $i
+            rm -f $i -v
         fi
         ;;
     llvm-ar|llvm-cvtres|llvm-dlltool|llvm-nm|llvm-objdump|llvm-ranlib|llvm-rc|llvm-readobj|llvm-strings|llvm-pdbutil|llvm-objcopy|llvm-strip|llvm-cov|llvm-profdata|llvm-addr2line|llvm-symbolizer|llvm-wrapper|llvm-windres|llvm-ml|llvm-readelf|llvm-size|llvm-cxxfilt|llvm-lib)
         ;;
     ld64.lld|wasm-ld)
         if [ -e $i ]; then
-            rm $i
+            rm $i -v
         fi
         ;;
     lldb|lldb-server|lldb-argdumper|lldb-instr|lldb-mi|lldb-vscode|lldb-dap)
         ;;
     *)
         if [ -f $i ]; then
-            rm $i
+            rm $i -v
         elif [ -L $i ] && [ ! -e $(readlink $i) ]; then
             # Remove dangling symlinks
-            rm $i
+            rm $i -v
         fi
         ;;
     esac
@@ -120,9 +122,9 @@ if [ -n "$EXEEXT" ]; then
     # lld-link isn't used normally, but can be useful for debugging/testing,
     # and is kept in unix setups. Removing it when packaging for windows,
     # to conserve space.
-    rm -f lld$EXEEXT lld-link$EXEEXT
+    rm -f lld$EXEEXT lld-link$EXEEXT -v
     # Remove superfluous frontends; these aren't really used.
-    rm -f clang-cpp* clang++*
+    rm -f clang-cpp* clang++* -v
 fi
 cd ..
 rm -rf libexec
@@ -133,24 +135,24 @@ for i in *; do
     clang-format*)
         ;;
     *)
-        rm -rf $i
+        rm -rf $i -v
         ;;
     esac
 done
 cd ..
-rm -rf opt-viewer scan-build scan-view
+rm -rf opt-viewer scan-build scan-view -v
 rm -rf man/man1/scan-build*
 cd ..
 cd include
-rm -rf clang-tidy lld lldb
+rm -rf lld
 cd ..
 cd lib
 for i in *.dll.a lib*.a; do
     case $i in
-    libclang-cpp*|libLLVM-[0-9]*)
+    libclang-cpp*|liblldb*|libLLVM-[0-9]*)
         ;;
     *)
-        rm -rf $i
+        rm -rf $i -v
         ;;
     esac
 done
@@ -161,8 +163,10 @@ for i in *.so* *.dylib* cmake; do
     LLVMgold*)
         ;;
     *)
-        rm -rf $i
+        rm -rf $i -v
         ;;
     esac
 done
 cd ..
+
+echo "===== End Strip LLVM ====="
