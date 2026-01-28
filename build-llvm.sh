@@ -186,8 +186,7 @@ if [ -z "${USE_LINKER:-}" ]; then
 fi
 
 # build LLVM gold plugin `LLVMgold.so` on Linux
-# but not for corss build to windows on Linux
-if [ "$(uname)" = "Linux" ] && [ -z "$TARGET_WINDOWS" ]; then
+if [ "$(uname)" = "Linux" ]; then
     BINUTILS_INCDIR="/usr/include"
 else
     BINUTILS_INCDIR=""
@@ -209,7 +208,7 @@ fi
 
 CMAKEFLAGS="$LLVM_CMAKEFLAGS"
 
-if [ -n "$HOST" ]; then
+if [ -n "$HOST" ] && [ "$(uname)" != "Darwin" ]; then
     ARCH="${HOST%%-*}"
 
     if [ -n "$WITH_CLANG" ]; then
@@ -234,10 +233,6 @@ if [ -n "$HOST" ]; then
         ;;
     *-linux*)
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Linux"
-        ;;
-    *-darwin)
-        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
-        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
         ;;
     *)
         echo "Unrecognized host $HOST"
@@ -350,6 +345,7 @@ if [ "$(uname)" = "Darwin" ]; then
             CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
         fi
     else # single architecture
+        ARCH="${HOST%%-*}"
         ARCH_LIST=$ARCH
         if [ "$ARCH" = "x86_64" ]; then
             CMAKE_C_FLAGS="-msse4.2"
