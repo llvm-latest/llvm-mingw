@@ -8,7 +8,6 @@ __Add some missing features and improvements.__
   - Add import libraries for Windows at
   - Add `libclang` dynamic library
 - Support building single-architecture macOS binaries
-- Compile with `SSE4.2` (for x86) by default
 - Use `mold` linker by default on Linux
 - Build LLVM gold plugin `LLVMgold.so` for Linux
 - Remove LLVM `NVPTX` target support

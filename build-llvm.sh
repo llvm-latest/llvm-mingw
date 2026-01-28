@@ -319,9 +319,6 @@ if [ -n "$LTO" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_LTO=$LTO"
 fi
 
-CMAKE_C_FLAGS=""
-CMAKE_CXX_FLAGS=""
-
 if [ "$(uname)" = "Darwin" ]; then
     if [ -n "$MACOS_REDIST" ]; then
         : ${MACOS_REDIST_ARCHS:=arm64 x86_64}
@@ -344,23 +341,11 @@ if [ "$(uname)" = "Darwin" ]; then
             CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
             CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
         fi
-    else # single architecture
-        ARCH="${HOST%%-*}"
-        ARCH_LIST=$ARCH
-        if [ "$ARCH" = "x86_64" ]; then
-            CMAKE_C_FLAGS="-msse4.2"
-            CMAKE_CXX_FLAGS="-msse4.2"
-        fi
     fi
 
     : ${MACOS_REDIST_VERSION:=10.12}
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_ARCHITECTURES=$ARCH_LIST"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_REDIST_VERSION"
-else
-    if [ "$ARCH" = "x86_64" ] || [ "$ARCH" = "i686" ]; then
-        CMAKE_C_FLAGS="-msse4.2"
-        CMAKE_CXX_FLAGS="-msse4.2"
-    fi
 fi
 
 if [ -z "$HOST" ] && [ "$(uname)" = "Darwin" ]; then
@@ -435,8 +420,6 @@ cmake \
     ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_C_FLAGS="$CMAKE_C_FLAGS" \
-    -DCMAKE_CXX_FLAGS="$CMAKE_CXX_FLAGS" \
     -DLLVM_ENABLE_ASSERTIONS=$ASSERTS \
     -DLLVM_ENABLE_PROJECTS="$PROJECTS" \
     -DLLVM_ENABLE_BINDINGS=OFF \
