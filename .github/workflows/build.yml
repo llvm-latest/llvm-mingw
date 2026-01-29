@@ -326,6 +326,7 @@ jobs:
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
         run: |
+          brew install coreutils
           # Disable zstd and python. Both are available on the runners, but
           # installed with homebrew, and only available in the native (arm64)
           # form.
@@ -377,6 +378,7 @@ jobs:
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
         run: |
+          brew install coreutils
           # Disable zstd and python. Both are available on the runners, but
           # installed with homebrew, and only available in the native (arm64)
           # form. Therefore, autodetection will pick them up, but linking

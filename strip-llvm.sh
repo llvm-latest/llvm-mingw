@@ -44,6 +44,13 @@ fi
 PREFIX="$(cd "$PREFIX" && pwd)"
 cd "$PREFIX"
 
+if [[ $(uname) = "Darwin" ]]; then
+    if ! command -v grealpath >/dev/null; then
+       brew install coreutils
+    fi
+    alias realpath=grealpath
+fi
+
 if [ -n "$MOVE_LLVM" ]; then
     remove_or_move() {
         local file="$1"
