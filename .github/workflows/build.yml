@@ -539,8 +539,8 @@ jobs:
             "
             X86_64_FILES=" \
               -x!$NAME/bin/aarch64-* \
-              -x!$NAME/aarch64-w64-mingw32" \
-              -x!$NAME/lib/clang/*/lib/windows/*-aarch64** \
+              -x!$NAME/aarch64-w64-mingw32 \
+              -x!$NAME/lib/clang/*/lib/windows/*-aarch64* \
             "
             LLVM_FILES="llvm-libs/*"
 
