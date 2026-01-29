@@ -60,7 +60,7 @@ else
         local file="$1"
         local abs_path="$(realpath -m "$file")"
         local relative_path="${abs_path#$PREFIX/}"
-        echo "Removing $relative_pathe"
+        echo "Removing $relative_path"
         rm -rf "$file"
     }
 fi
