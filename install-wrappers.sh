@@ -102,7 +102,7 @@ if [ -n "${HOST_CLANG}" ]; then
     done
 fi
 
-WRAPPER_FLAGS="-flto -ffunction-sections -fdata-sections -fno-unwind-tables"
+WRAPPER_FLAGS="-ffunction-sections -fdata-sections -fno-unwind-tables"
 if [ "$(uname)" = "Darwin" ]; then
     WRAPPER_FLAGS="$WRAPPER_FLAGS -Wl,-dead_strip -Wl,-dead_strip_dylibs"
 else
