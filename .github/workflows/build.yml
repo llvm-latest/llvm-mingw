@@ -87,8 +87,6 @@ jobs:
           key: ccache-${{ github.job }}
           restore-keys: ccache-${{ github.job }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
@@ -96,6 +94,7 @@ jobs:
           TAG: ${{needs.prepare.outputs.TAG}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
+          COMPILER_LAUNCHER: ccache
         run: |
           # Skip dynamic library dependencies that might make it harder to
           # run the binaries on other distros (and that have little use within
@@ -131,8 +130,6 @@ jobs:
           key: ccache-${{ github.job }}
           restore-keys: ccache-${{ github.job }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -147,6 +144,7 @@ jobs:
           TAG: ${{needs.prepare.outputs.TAG}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
+          COMPILER_LAUNCHER: ccache
         run: |
           # Build LLVM in mostly the same way as it is going to be built in the
           # final form.
@@ -174,8 +172,6 @@ jobs:
           key: ccache-${{ github.job }}
           restore-keys: ccache-${{ github.job }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -193,6 +189,7 @@ jobs:
           TAG: ${{needs.prepare.outputs.TAG}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
+          COMPILER_LAUNCHER: ccache
         run: |
           # Skip dynamic library dependencies that might make it harder to
           # run the binaries on other distros (and that have little use within
@@ -239,8 +236,6 @@ jobs:
           key: ccache-${{ github.job }}
           restore-keys: ccache-${{ github.job }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -257,6 +252,7 @@ jobs:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
           MINGW_W64_VERSION: ${{needs.prepare.outputs.MINGW_W64_VERSION}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
+          COMPILER_LAUNCHER: ccache
         run: |
           apt-get update -qq && apt-get install -qy g++-aarch64-linux-gnu
           ./build-all.sh /opt/llvm-mingw $(pwd)/install/llvm-mingw --no-runtimes --host=aarch64-linux-gnu --thinlto --pgo
@@ -340,14 +336,13 @@ jobs:
           key: ccache-${{ github.job }}
           restore-keys: ccache-${{ github.job }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
           TAG: ${{needs.prepare.outputs.TAG}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
+          COMPILER_LAUNCHER: ccache
         run: |
           # Disable and python. This is available on the runners, but
           # installed with homebrew, and only available in the native (arm64)
@@ -387,8 +382,6 @@ jobs:
           key: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           restore-keys: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
       - uses: actions/download-artifact@v4
         with:
           name: macos-llvm
@@ -407,6 +400,7 @@ jobs:
           TAG: ${{needs.prepare.outputs.TAG}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
+          COMPILER_LAUNCHER: ccache
         run: |
           # Disable python. This is available on the runners, but
           # installed with homebrew, and only available in the native (arm64)
@@ -510,14 +504,6 @@ jobs:
           key: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           restore-key: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           max-size: 2GB
-        env:
-          COMPILER_LAUNCHER: ccache
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
-          sudo: false
-          timeout-minutes: 15
       - name: Install Dependencies
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
@@ -551,6 +537,7 @@ jobs:
           TAG: ${{needs.prepare.outputs.TAG}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
+          COMPILER_LAUNCHER: ccache
         run: |
           apt-get update -qq && apt-get install -qy libltdl-dev swig autoconf-archive
           ./build-cross-tools.sh /opt/llvm-mingw $(pwd)/install/llvm-mingw ${{matrix.arch}} --with-python --with-zstd --with-busybox --move-llvm --thinlto --pgo
