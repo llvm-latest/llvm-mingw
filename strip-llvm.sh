@@ -44,19 +44,12 @@ fi
 PREFIX="$(cd "$PREFIX" && pwd)"
 cd "$PREFIX"
 
-if [ "$(uname)" = "Darwin" ]; then
-    if ! command -v grealpath >/dev/null; then
-       brew install coreutils
-    fi
-    alias realpath=grealpath
-fi
-
 if [ -n "$MOVE_LLVM" ]; then
     remove_or_move() {
         local file="$1"
-        local abs_path="$(realpath -m "$file")"
+        local abs_path="$(pwd)/$file"
         local relative_path="${abs_path#$PREFIX/}"
-        local dest="$(realpath -m "$PREFIX/../llvm-libs/$relative_path")"
+        local dest="$(dirname "$PREFIX")/llvm-libs/$relative_path"
         local dest_dir="$(dirname "$dest")"
         echo "Moving $relative_path -> $dest"
         mkdir -p "$dest_dir"
@@ -65,7 +58,7 @@ if [ -n "$MOVE_LLVM" ]; then
 else
     remove_or_move() {
         local file="$1"
-        local abs_path="$(realpath -m "$file")"
+        local abs_path="$(pwd)/$file"
         local relative_path="${abs_path#$PREFIX/}"
         echo "Removing $relative_path"
         rm -rf "$file"
