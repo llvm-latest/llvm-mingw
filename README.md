@@ -5,7 +5,7 @@ __Add some missing features and improvements.__
 
 - Support for building `LLVM`/`Clang`/`LLDB`/`Clang-Tidy` plugins
   - Add `llvm`/`llvm-c`/`clang`/`clang-c`/`lldb`/`clang-tidy` headers
-  - Add `libclang` shared library
+  - Add `libclang` dynamic library
 - Support for building single-architecture macOS binaries
 - Use `mold` linker by default on Linux
 - Build LLVM gold plugin `LLVMgold.so` for Linux

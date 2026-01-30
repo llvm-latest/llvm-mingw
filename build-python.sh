@@ -70,6 +70,15 @@ if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBFFI" ]; then
     cd ..
 fi
 
+LDFLAGS="-ffunction-sections -fdata-sections -fno-unwind-tables"
+if [ "$(uname)" = "Darwin" ]; then
+    LDFLAGS="$LDFLAGS -Wl,-dead_strip -Wl,-dead_strip_dylibs"
+else
+    LDFLAGS="$LDFLAGS -Wl,-s -Wl,--gc-sections"
+fi
+# use the following LTO flags for LLVM-MinGW
+LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
+
 if [ -z "$HOST" ]; then
     # Use a separate checkout for python for the native build;
     # mingw builds use a separate fork, maintained by msys2
@@ -102,7 +111,7 @@ if [ -z "$HOST" ]; then
     mkdir -p $BUILDDIR
     cd $BUILDDIR
     ../configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib -Wl,-s" \
+        CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
         --without-ensurepip \
         --disable-test-modules
     $MAKE -j$CORES
@@ -150,7 +159,7 @@ export CC=$HOST-gcc
 export CXX=$HOST-g++
 
 ../configure --prefix="$PREFIX" --build=$BUILD --host=$HOST \
-    CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib -Wl,-s" \
+    CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
     --with-build-python="$NATIVE_PYTHON" \
     --enable-shared             \
