@@ -3,13 +3,13 @@ This Fork
 
 __Add some missing features and improvements.__
 
-- Support LLVM/Clang/LLDB/Clang-Tidy plugins
-  - Add `llvm/llvm-c/clang/clang-c/lldb/clang-tidy` headers
-  - Add `libclang` dynamic library
-- Support building single-architecture macOS binaries
+- Support for building `LLVM`/`Clang`/`LLDB`/`Clang-Tidy` plugins
+  - Add `llvm`/`llvm-c`/`clang`/`clang-c`/`lldb`/`clang-tidy` headers
+  - Add `libclang` shared library
+- Support for building single-architecture macOS binaries
 - Use `mold` linker by default on Linux
 - Build LLVM gold plugin `LLVMgold.so` for Linux
-- Remove LLVM `NVPTX` target support
+- Removed LLVM `NVPTX` target support
 - CI: Use latest ubuntu docker containers `ubuntu:devel` for building
 - Windows: Enabled zstd support for LLVM
 
