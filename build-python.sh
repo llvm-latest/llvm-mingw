@@ -103,6 +103,7 @@ if [ -z "$HOST" ]; then
     cd $BUILDDIR
     ../configure --prefix="$PREFIX" \
         CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib -Wl,-s" \
+        --with-lto \
         --without-ensurepip \
         --disable-test-modules
     $MAKE -j$CORES
@@ -153,6 +154,7 @@ export CXX=$HOST-g++
     CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib -Wl,-s" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
     --with-build-python="$NATIVE_PYTHON" \
+    --with-lto                  \
     --enable-shared             \
     --with-system-ffi           \
     --without-ensurepip         \
