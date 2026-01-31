@@ -45,13 +45,43 @@ if [ ! -d zstd ]; then
     git clone --depth 1 https://github.com/facebook/zstd.git
 fi
 
+if command -v ninja >/dev/null; then
+    CMAKE_GENERATOR="Ninja"
+else
+    : ${CORES:=$(nproc 2>/dev/null)}
+    : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
+    : ${CORES:=4}
+
+    case $(uname) in
+    MINGW*)
+        CMAKE_GENERATOR="MSYS Makefiles"
+        ;;
+    esac
+fi
+
 if [ -n "$HOST" ]; then
     CROSS_NAME=-$HOST
+
+    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=$HOST-gcc"
+    # CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=$HOST-g++"
+    case $HOST in
+    *-mingw32)
+        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Windows"
+        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_RC_COMPILER=$HOST-windres"
+        ;;
+    *-linux*)
+        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Linux"
+        ;;
+    *)
+        echo "Unrecognized host $HOST"
+        exit 1
+        ;;
+    esac
 fi
 
 if [ -n "$COMPILER_LAUNCHER" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER_LAUNCHER=$COMPILER_LAUNCHER"
-    CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER_LAUNCHER=$COMPILER_LAUNCHER"
+    # CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER_LAUNCHER=$COMPILER_LAUNCHER"
 fi
 
 if [ "$(uname)" = "Darwin" ]; then
@@ -73,8 +103,11 @@ if [ "$(uname)" = "Darwin" ]; then
     done
     if [ -z "$NATIVE" ]; then
         # If we're not building for the native arch, flag to CMake that we're
-        # cross compiling.
+        # cross compiling, to let it build native versions of tools used
+        # during the build.
+        ARCH="$(echo $MACOS_REDIST_ARCHS | awk '{print $1}')"
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Darwin"
+        CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_PROCESSOR=$ARCH"
     fi
 
     : ${MACOS_REDIST_VERSION:=10.12}
@@ -89,17 +122,15 @@ mkdir -p build$CROSS_NAME
 cd build$CROSS_NAME
 
 cmake \
-    -G "Ninja" \
+    ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_SYSTEM_NAME=Windows \
-    -DCMAKE_C_COMPILER=$HOST-gcc \
     -DZSTD_BUILD_PROGRAMS=OFF \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TESTING=OFF \
     $CMAKEFLAGS \
     ..
 cmake --build . -j$CORES
-cmake --install . --strip --prefix .
+cmake --install . --prefix . --strip
 
 # excluded lib/cmake/zstd lib/pkgconfig/libzstd.pc
 mkdir -p "$PREFIX/bin"

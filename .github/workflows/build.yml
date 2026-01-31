@@ -173,7 +173,7 @@ jobs:
         with:
           key: ${{ github.job }}
           restore-keys: ${{ github.job }}
-          max-size: 800MB
+          max-size: 1GB
           append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
