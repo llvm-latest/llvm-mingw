@@ -82,7 +82,7 @@ jobs:
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
           max-size: 800MB
@@ -124,7 +124,7 @@ jobs:
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
           max-size: 800MB
@@ -165,7 +165,7 @@ jobs:
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
           max-size: 1GB
@@ -228,7 +228,7 @@ jobs:
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
           max-size: 800MB
@@ -327,7 +327,7 @@ jobs:
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
           max-size: 800MB
@@ -372,7 +372,7 @@ jobs:
         run: git config --global http.retry 5
       - uses: actions/checkout@v4
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           max-size: 800MB
@@ -496,7 +496,7 @@ jobs:
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
       - name: Setup ccache
-        uses: jianmingyong/ccache-action
+        uses: jianmingyong/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           max-size: 800MB
