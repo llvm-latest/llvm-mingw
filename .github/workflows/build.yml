@@ -86,7 +86,7 @@ jobs:
         with:
           key: ${{ github.job }}
           restore-keys: ${{ github.job }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
       - name: Build
         env:
@@ -130,7 +130,7 @@ jobs:
         with:
           key: ${{ github.job }}
           restore-keys: ${{ github.job }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
@@ -173,7 +173,7 @@ jobs:
         with:
           key: ${{ github.job }}
           restore-keys: ${{ github.job }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
@@ -238,7 +238,7 @@ jobs:
         with:
           key: ${{ github.job }}
           restore-keys: ${{ github.job }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
@@ -339,7 +339,7 @@ jobs:
         with:
           key: ${{ github.job }}
           restore-keys: ${{ github.job }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
       - name: Build
         env:
@@ -386,7 +386,7 @@ jobs:
         with:
           key: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           restore-keys: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
@@ -504,16 +504,16 @@ jobs:
           - { arch: aarch64, crt: ucrt }
     steps:
       - uses: actions/checkout@v4
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
           key: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           restore-keys: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
-          max-size: 2GB
+          max-size: 800MB
           append-timestamp: false
-      - name: Install Dependencies
-        run: ./install-dependencies.sh
-      - uses: rui314/setup-mold@v1
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-${{matrix.crt}}-x86_64-toolchain
