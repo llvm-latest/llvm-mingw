@@ -84,9 +84,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}
-          restore-keys: ccache-${{ github.job }}
+          key: ${{ github.job }}
+          restore-keys: ${{ github.job }}
           max-size: 2GB
+          append-timestamp: false
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
@@ -127,9 +128,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}
-          restore-keys: ccache-${{ github.job }}
+          key: ${{ github.job }}
+          restore-keys: ${{ github.job }}
           max-size: 2GB
+          append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -169,9 +171,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}
-          restore-keys: ccache-${{ github.job }}
+          key: ${{ github.job }}
+          restore-keys: ${{ github.job }}
           max-size: 2GB
+          append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -233,9 +236,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}
-          restore-keys: ccache-${{ github.job }}
+          key: ${{ github.job }}
+          restore-keys: ${{ github.job }}
           max-size: 2GB
+          append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -333,9 +337,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}
-          restore-keys: ccache-${{ github.job }}
+          key: ${{ github.job }}
+          restore-keys: ${{ github.job }}
           max-size: 2GB
+          append-timestamp: false
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
@@ -379,9 +384,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
-          restore-keys: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
+          key: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
+          restore-keys: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           max-size: 2GB
+          append-timestamp: false
       - uses: actions/download-artifact@v4
         with:
           name: macos-llvm
@@ -501,9 +507,10 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@main
         with:
-          key: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
-          restore-key: ccache-${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
+          key: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
+          restore-keys: ${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
           max-size: 2GB
+          append-timestamp: false
       - name: Install Dependencies
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
