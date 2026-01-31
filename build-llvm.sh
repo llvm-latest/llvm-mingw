@@ -308,9 +308,12 @@ fi
 if [ -n "$WITH_ZSTD" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=ON"
     ZSTD_INCLUDE_DIR="$$PREFIX/include/zstd"
-    ZSTD_LIB="$$PREFIX/lib"
+    ZSTD_LIB="$PREFIX/lib"
     CMAKEFLAGS="$CMAKEFLAGS -Dzstd_INCLUDE_DIR=$ZSTD_INCLUDE_DIR"
     CMAKEFLAGS="$CMAKEFLAGS -Dzstd_LIBRARY=$ZSTD_LIB"
+    if [ "$(uname)" = "Darwing" ]; then
+        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_STATIC_ZSTD=ON"
+    fi
 fi
 
 if [ -n "$COMPILER_LAUNCHER" ]; then
