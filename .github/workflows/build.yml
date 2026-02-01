@@ -375,7 +375,7 @@ jobs:
       - name: Setup ccache
         uses: jianmingyong/ccache-action@main
         with:
-          ccache-key-prefix: ccache_${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
+          ccache-key-prefix: ccache_${{ github.job }}-${{ matrix.arch }}-${{ matrix.crt }}
           max-size: 800M
       - uses: actions/download-artifact@v4
         with:
@@ -499,7 +499,7 @@ jobs:
       - name: Setup ccache
         uses: jianmingyong/ccache-action@main
         with:
-          ccache-key-prefix: ccache_${{ github.job }}-{{ matrix.arch }}-{{ matrix.crt }}
+          ccache-key-prefix: ccache_${{ github.job }}-${{ matrix.arch }}-${{ matrix.crt }}
           max-size: 800M
       - uses: actions/download-artifact@v4
         with:

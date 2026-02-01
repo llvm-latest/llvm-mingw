@@ -148,8 +148,8 @@ fi
 
 [ -z "$CHECKOUT_ONLY" ] || exit 0
 
-# Use the following LTO flags for LLVM-MinGW
-LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
+unset CC
+unset CXX
 
 cd libffi
 [ -z "$CLEAN" ] || rm -rf $BUILDDIR
@@ -180,6 +180,9 @@ else
     export CC="$COMPILER_LAUNCHER $HOST-gcc"
     export CXX="$COMPILER_LAUNCHER $HOST-g++"
 fi
+
+# Use the following LTO flags for LLVM-MinGW
+LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partition=none"
 
 ../configure --prefix="$PREFIX" --build=$BUILD --host=$HOST \
     CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
