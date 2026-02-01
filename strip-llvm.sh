@@ -181,7 +181,7 @@ for i in *.dll.a lib*.a; do
     case $i in
     libclang.dll.a|libclang-cpp*|liblldb*|libLLVM-[0-9]*)
         ;;
-    libzstd.dll.a) # thirdparty libs
+    libzstd.*) # thirdparty libs
         ;;
     *)
         remove_or_move $i
