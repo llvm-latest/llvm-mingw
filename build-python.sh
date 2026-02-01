@@ -56,6 +56,18 @@ fi
 : ${CORES:=$(sysctl -n hw.ncpu 2>/dev/null)}
 : ${CORES:=4}
 
+LDFLAGS="-ffunction-sections -fdata-sections -fno-unwind-tables"
+if [ "$(uname)" = "Darwin" ]; then
+    LDFLAGS="$LDFLAGS -Wl,-dead_strip -Wl,-dead_strip_dylibs"
+else
+    LDFLAGS="$LDFLAGS -Wl,-s -Wl,--gc-sections"
+fi
+# use the following LTO flags for LLVM-MinGW
+# With Clang
+LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
+# With GCC
+# LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partition=none"
+
 if [ ! -d libffi ]; then
     git clone https://github.com/libffi/libffi.git
     CHECKOUT_LIBFFI=1
@@ -70,16 +82,15 @@ if [ -n "$SYNC" ] || [ -n "$CHECKOUT_LIBFFI" ]; then
     cd ..
 fi
 
-LDFLAGS="-ffunction-sections -fdata-sections -fno-unwind-tables"
-if [ "$(uname)" = "Darwin" ]; then
-    LDFLAGS="$LDFLAGS -Wl,-dead_strip -Wl,-dead_strip_dylibs"
-else
-    LDFLAGS="$LDFLAGS -Wl,-s -Wl,--gc-sections"
-fi
-# use the following LTO flags for LLVM-MinGW
-LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
-
 if [ -z "$HOST" ]; then
+    if [ -z "$COMPILER_LAUNCHER" ]; then
+        export CC=clang
+        export CXX=clang++
+    else
+        export CC="$COMPILER_LAUNCHER clang"
+        export CXX="$COMPILER_LAUNCHER clang++"
+    fi
+
     # Use a separate checkout for python for the native build;
     # mingw builds use a separate fork, maintained by msys2
     # which doesn't build on regular Unix
@@ -101,7 +112,10 @@ if [ -z "$HOST" ]; then
     [ -z "$CLEAN" ] || rm -rf $BUILDDIR
     mkdir -p $BUILDDIR
     cd $BUILDDIR
-    ../configure --prefix="$PREFIX" --disable-symvers --disable-docs
+    ../configure --prefix="$PREFIX" \
+        LDFLAGS="$LDFLAGS" \
+        --disable-symvers \
+        --disable-docs
     $MAKE -j$CORES
     $MAKE install
     cd ../..
@@ -111,7 +125,7 @@ if [ -z "$HOST" ]; then
     mkdir -p $BUILDDIR
     cd $BUILDDIR
     ../configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
+        CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
         --without-ensurepip \
         --disable-test-modules
     $MAKE -j$CORES
@@ -136,11 +150,22 @@ fi
 
 [ -z "$CHECKOUT_ONLY" ] || exit 0
 
+if [ -z "$COMPILER_LAUNCHER" ]; then
+    export CC=$HOST-gcc
+    export CXX=$HOST-g++
+else
+    export CC="$COMPILER_LAUNCHER $HOST-gcc"
+    export CXX="$COMPILER_LAUNCHER $HOST-g++"
+fi
+
 cd libffi
 [ -z "$CLEAN" ] || rm -rf $BUILDDIR
 mkdir -p $BUILDDIR
 cd $BUILDDIR
-../configure --prefix="$PREFIX" --host=$HOST --disable-symvers --disable-docs
+../configure --prefix="$PREFIX" --host=$HOST \
+    LDFLAGS="$LDFLAGS" \
+    --disable-symvers \
+    --disable-docs
 $MAKE -j$CORES
 $MAKE install
 mkdir -p "$PREFIX/share/libffi"
@@ -155,16 +180,8 @@ BUILD=$(../config.guess) # Python configure requires build triplet for cross com
 # Locate the native python3 that we've built before, from the path
 NATIVE_PYTHON="$(command -v python3)"
 
-if [ -z "$COMPILER_LAUNCHER" ]; then
-    export CC=$HOST-gcc
-    export CXX=$HOST-g++
-else
-    export CC="$COMPILER_LAUNCHER $HOST-gcc"
-    export CXX="$COMPILER_LAUNCHER $HOST-g++"
-fi
-
 ../configure --prefix="$PREFIX" --build=$BUILD --host=$HOST \
-    CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="$LDFLAGS -L$PREFIX/lib" \
+    CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
     --with-build-python="$NATIVE_PYTHON" \
     --enable-shared             \
