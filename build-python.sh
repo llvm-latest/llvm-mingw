@@ -148,14 +148,6 @@ fi
 
 [ -z "$CHECKOUT_ONLY" ] || exit 0
 
-if [ -z "$COMPILER_LAUNCHER" ]; then
-    export CC=$HOST-gcc
-    export CXX=$HOST-g++
-else
-    export CC="$COMPILER_LAUNCHER $HOST-gcc"
-    export CXX="$COMPILER_LAUNCHER $HOST-g++"
-fi
-
 # Use the following LTO flags for LLVM-MinGW
 LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
 
@@ -180,6 +172,14 @@ cd $BUILDDIR
 BUILD=$(../config.guess) # Python configure requires build triplet for cross compilation
 # Locate the native python3 that we've built before, from the path
 NATIVE_PYTHON="$(command -v python3)"
+
+if [ -z "$COMPILER_LAUNCHER" ]; then
+    export CC=$HOST-gcc
+    export CXX=$HOST-g++
+else
+    export CC="$COMPILER_LAUNCHER $HOST-gcc"
+    export CXX="$COMPILER_LAUNCHER $HOST-g++"
+fi
 
 ../configure --prefix="$PREFIX" --build=$BUILD --host=$HOST \
     CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
