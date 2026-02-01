@@ -62,11 +62,6 @@ if [ "$(uname)" = "Darwin" ]; then
 else
     LDFLAGS="$LDFLAGS -Wl,-s -Wl,--gc-sections"
 fi
-# use the following LTO flags for LLVM-MinGW
-# With Clang
-LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
-# With GCC
-# LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partition=none"
 
 if [ ! -d libffi ]; then
     git clone https://github.com/libffi/libffi.git
@@ -84,12 +79,14 @@ fi
 
 if [ -z "$HOST" ]; then
     if [ -z "$COMPILER_LAUNCHER" ]; then
-        export CC=clang
-        export CXX=clang++
+        export CC=gcc
+        export CXX=g++
     else
-        export CC="$COMPILER_LAUNCHER clang"
-        export CXX="$COMPILER_LAUNCHER clang++"
+        export CC="$COMPILER_LAUNCHER gcc"
+        export CXX="$COMPILER_LAUNCHER g++"
     fi
+    # With native GCC (`--with-lto` will add the following flags)
+    # LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
 
     # Use a separate checkout for python for the native build;
     # mingw builds use a separate fork, maintained by msys2
@@ -126,6 +123,7 @@ if [ -z "$HOST" ]; then
     cd $BUILDDIR
     ../configure --prefix="$PREFIX" \
         CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
+        --with-lto \
         --without-ensurepip \
         --disable-test-modules
     $MAKE -j$CORES
@@ -157,6 +155,9 @@ else
     export CC="$COMPILER_LAUNCHER $HOST-gcc"
     export CXX="$COMPILER_LAUNCHER $HOST-g++"
 fi
+
+# Use the following LTO flags for LLVM-MinGW
+LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
 
 cd libffi
 [ -z "$CLEAN" ] || rm -rf $BUILDDIR
