@@ -86,7 +86,7 @@ if [ -z "$HOST" ]; then
         export CXX="$COMPILER_LAUNCHER g++"
     fi
     # With native GCC (`--with-lto` will add the following flags)
-    # LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partitions=none"
+    # LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partition=none"
 
     # Use a separate checkout for python for the native build;
     # mingw builds use a separate fork, maintained by msys2
@@ -122,7 +122,7 @@ if [ -z "$HOST" ]; then
     mkdir -p $BUILDDIR
     cd $BUILDDIR
     ../configure --prefix="$PREFIX" \
-        CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
+        CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib $LDFLAGS" \
         --with-lto \
         --without-ensurepip \
         --disable-test-modules
@@ -148,8 +148,15 @@ fi
 
 [ -z "$CHECKOUT_ONLY" ] || exit 0
 
-unset CC
-unset CXX
+if [ -z "$COMPILER_LAUNCHER" ]; then
+    export CC=$HOST-gcc
+    export CXX=$HOST-g++
+else
+    export CC="$COMPILER_LAUNCHER $HOST-gcc"
+    export CXX="$COMPILER_LAUNCHER $HOST-g++"
+fi
+# Use Clang-specific LTO flags with LLVM-MinGW
+LDFLAGS="$LDFLAGS -flto=full -ffat-lto-objects"
 
 cd libffi
 [ -z "$CLEAN" ] || rm -rf $BUILDDIR
@@ -173,23 +180,11 @@ BUILD=$(../config.guess) # Python configure requires build triplet for cross com
 # Locate the native python3 that we've built before, from the path
 NATIVE_PYTHON="$(command -v python3)"
 
-if [ -z "$COMPILER_LAUNCHER" ]; then
-    export CC=$HOST-gcc
-    export CXX=$HOST-g++
-else
-    export CC="$COMPILER_LAUNCHER $HOST-gcc"
-    export CXX="$COMPILER_LAUNCHER $HOST-g++"
-fi
-
-# Use the following LTO flags for LLVM-MinGW
-LDFLAGS="$LDFLAGS -flto -ffat-lto-objects -flto-partition=none"
-
 ../configure --prefix="$PREFIX" --build=$BUILD --host=$HOST \
-    CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include -L$PREFIX/lib" LDFLAGS="$LDFLAGS" \
+    CFLAGS="-I$PREFIX/include" CXXFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib $LDFLAGS" \
     PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig" \
     --with-build-python="$NATIVE_PYTHON" \
     --enable-shared             \
-    --with-system-ffi           \
     --without-ensurepip         \
     --without-c-locale-coercion \
     --disable-test-modules
