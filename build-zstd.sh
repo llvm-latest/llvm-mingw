@@ -125,7 +125,7 @@ cmake \
     ${CMAKE_GENERATOR+-G} "$CMAKE_GENERATOR" \
     -DCMAKE_BUILD_TYPE=Release \
     -DZSTD_BUILD_PROGRAMS=OFF \
-    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_SHARED_LIBS=OFF \
     -DBUILD_TESTING=OFF \
     $CMAKEFLAGS \
     ..
@@ -133,11 +133,7 @@ cmake --build . -j$CORES
 cmake --install . --prefix . --strip
 
 # lib/cmake/zstd lib/pkgconfig/libzstd.pc
-if [ -d "bin" ]; then # Windows dynamic library
-    mkdir -p "$PREFIX/bin"
-    cp -r bin/libzstd.dll "$PREFIX/bin"
-fi
 mkdir -p "$PREFIX/include/zstd"
 cp include/* "$PREFIX/include/zstd"
 mkdir -p "$PREFIX/lib"
-cp lib/libzstd*.a "$PREFIX/lib"
+cp lib/libzstd.a "$PREFIX/lib"

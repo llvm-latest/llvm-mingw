@@ -128,8 +128,6 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
         ;;
     lldb|lldb-server|lldb-argdumper|lldb-instr|lldb-mi|lldb-vscode|lldb-dap)
         ;;
-    libzstd.dll) # thirdparty libs
-        ;;
     *)
         if [ -f $i ]; then
             remove_or_move $i
@@ -193,8 +191,6 @@ for i in *.so* *.dylib* cmake; do
     libclang.so*|libclang.dylib*|libclang-cpp*|liblldb*|libLLVM*)
         ;;
     LLVMgold*)
-        ;;
-    libzstd*) # thirdparty libs
         ;;
     *)
         remove_or_move $i

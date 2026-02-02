@@ -307,12 +307,9 @@ fi
 
 if [ -n "$WITH_ZSTD" ]; then
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=ON"
-    if [ "$(uname)" = "Darwing" ]; then
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_STATIC_ZSTD=ON"
-    fi
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_STATIC_ZSTD=ON"
     ZSTD_INCLUDE_DIR="$PREFIX/include/zstd"
-    # match libzstd.a for macOS and libzstd.dll.a for Windows
-    ZSTD_LIB="$(echo $PREFIX/lib/libzstd*.a)"
+    ZSTD_LIB="$(echo $PREFIX/lib/libzstd.a)"
     CMAKEFLAGS="$CMAKEFLAGS -Dzstd_INCLUDE_DIR=$ZSTD_INCLUDE_DIR"
     CMAKEFLAGS="$CMAKEFLAGS -Dzstd_LIBRARY=$ZSTD_LIB"
 fi
