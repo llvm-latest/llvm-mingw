@@ -25,6 +25,9 @@ while [ $# -gt 0 ]; do
     --host=*)
         HOST="${1#*=}"
         ;;
+    --with-zstd)
+        WITH_ZSTD=1
+        ;;
     *)
         PREFIX="$1"
         ;;
@@ -160,6 +163,15 @@ if [ "$(uname)" = "Darwin" ]; then
     : ${MACOS_REDIST_VERSION:=10.12}
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_ARCHITECTURES=$ARCH_LIST"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_REDIST_VERSION"
+fi
+
+if [ -n "$WITH_ZSTD" ]; then
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=ON"
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_STATIC_ZSTD=ON"
+    ZSTD_INCLUDE_DIR="$PREFIX/include/zstd"
+    ZSTD_LIB="$(echo $PREFIX/lib/libzstd.a)"
+    CMAKEFLAGS="$CMAKEFLAGS -Dzstd_INCLUDE_DIR=$ZSTD_INCLUDE_DIR"
+    CMAKEFLAGS="$CMAKEFLAGS -Dzstd_LIBRARY=$ZSTD_LIB"
 fi
 
 cd lldb-mi
