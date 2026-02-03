@@ -719,7 +719,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { arch: i686, asmflag: }
+          - { arch: i686, asmflag: '' }
           - { arch: x86_64, asmflag: -m64 }
           - { arch: aarch64 }
     runs-on: ${{startsWith(matrix.arch, 'a') && 'windows-11-arm' || 'windows-latest'}}
