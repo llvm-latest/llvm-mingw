@@ -12,6 +12,8 @@ __Add some missing features and improvements.__
 - Removed LLVM `NVPTX` target support
 - CI: Using the latest ubuntu docker container `ubuntu:devel` for building
 - CI: Support for speedup building using `ccache`
+  - ccache sloppiness: `time_macros, include_file_mtime, include_file_ctime`
+- CI: Parallelize `linux-stage1` tests to saving several minutes in the build
 - Windows/macOS: Enabled `zstd` support for LLVM
 
 LLVM MinGW
