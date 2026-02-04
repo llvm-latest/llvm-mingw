@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 : ${SQLITE_VERSION:=3490200}
 : ${SQLITE_YEAR:=2025}
 
@@ -70,3 +72,5 @@ $MAKE -f pgo-training.make PREFIX=$PREFIX STAGE1=$STAGE1 SQLITE=$SQLITE -j$CORES
 rm -f "$LLVM_PROFDATA_FILE"
 $STAGE1/bin/llvm-profdata merge -output "$LLVM_PROFDATA_FILE" $LLVM_PROFILE_DATA_DIR/*.profraw
 rm -rf "$LLVM_PROFILE_DATA_DIR"
+
+lgo_end

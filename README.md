@@ -14,6 +14,7 @@ __Add some missing features and improvements.__
 - CI: Support for speedup building using `ccache`
   - ccache sloppiness: `time_macros, include_file_mtime, include_file_ctime`
 - CI: Parallelize `linux-stage1` tests to saving several minutes in the build
+- CI: Add logging to build scripts
 - Windows/macOS: Enabled `zstd` support for LLVM
 
 LLVM MinGW

@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 BUILD_STATIC=ON
 BUILD_SHARED=ON
 CFGUARD_CFLAGS="-mguard=cf"

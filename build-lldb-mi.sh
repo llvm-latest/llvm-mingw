@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 : ${LLDB_MI_VERSION:=f1fea743bf06a99b6e7f74085bd8c8db47999df5}
 BUILDDIR=build
 unset HOST

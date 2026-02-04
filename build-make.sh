@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 unset HOST
 
 : ${MAKE_VERSION:=4.4.1}

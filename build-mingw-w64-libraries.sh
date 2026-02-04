@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 USE_CFLAGS="-g -O2 -mguard=cf"
 
 while [ $# -gt 0 ]; do

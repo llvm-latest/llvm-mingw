@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 unset HOST
 
 while [ $# -gt 0 ]; do

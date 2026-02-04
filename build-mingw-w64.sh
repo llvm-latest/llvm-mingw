@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 : ${DEFAULT_WIN32_WINNT:=0x601}
 : ${DEFAULT_MSVCRT:=ucrt}
 : ${MINGW_W64_VERSION:=55735d71ed1187098df4d80a8f6c98a7735b1cd5}

@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 unset HOST
 unset HOST_CLANG
 

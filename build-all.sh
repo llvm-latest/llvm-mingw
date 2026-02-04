@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 HOST_CLANG=
 LLVM_ARGS=""
 MINGW_ARGS=""

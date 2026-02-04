@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 SRC_DIR=../lib/builtins
 BUILD_SUFFIX=
 BUILD_BUILTINS=TRUE

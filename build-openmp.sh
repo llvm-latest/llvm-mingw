@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 CFGUARD_CFLAGS="-mguard=cf"
 
 while [ $# -gt 0 ]; do

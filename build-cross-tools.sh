@@ -16,6 +16,8 @@
 
 set -e
 
+. ./logging.sh
+
 while [ $# -gt 0 ]; do
     case "$1" in
     --with-python)
