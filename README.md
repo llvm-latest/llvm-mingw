@@ -1,7 +1,7 @@
 This Fork
 ==========
 
-__Add some missing features and improvements.__
+__Add some missing features and several improvements.__
 
 - Support for building `LLVM`/`Clang`/`LLDB`/`Clang-Tidy` plugins
   - Add `llvm`/`llvm-c`/`clang`/`clang-c`/`lldb`/`clang-tidy` headers
@@ -10,11 +10,12 @@ __Add some missing features and improvements.__
 - Use `mold` linker by default on Linux
 - Build LLVM gold plugin `LLVMgold.so` for Linux
 - Removed LLVM `NVPTX` target support
+- CI: Add additional checks to prevent build failures caused by frequent GitHub cloud service outages or network fluctuations
 - CI: Using the latest ubuntu docker container `ubuntu:devel` for building
 - CI: Support for speedup building using `ccache`
-  - ccache sloppiness: `time_macros, include_file_mtime, include_file_ctime`
-- CI: Parallelize `linux-stage1` tests to saving several minutes in the build
+- CI: Set ccache sloppiness to `time_macros, include_file_mtime, include_file_ctime`
 - CI: Add logging to build scripts
+- CI: Parallelize `linux-stage1` tests to saving several minutes in the build
 - Windows/macOS: Enabled `zstd` support for LLVM
 
 LLVM MinGW

@@ -4,7 +4,8 @@ set -e
 
 # Install Essential Tools
 apt-get update -qq
-apt-get install -qy -o Dpkg::Use-Pty=0 \
+apt-get install -y -o Dpkg::Use-Pty=0 apt-fast
+apt-fast install -y -o Dpkg::Use-Pty=0 \
     wget curl software-properties-common \
     git git-lfs \
     build-essential binutils binutils-dev \
