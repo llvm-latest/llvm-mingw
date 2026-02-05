@@ -556,9 +556,9 @@ jobs:
           NAME=windows-x86_64-llvm-mingw-$TAG-${{matrix.crt}}-${{matrix.arch}}
           mv llvm-mingw $NAME
 
-          # Create LLVM-MinGW Tiny Version Packages
+          # Create llvm-mingw tiny version toolchain
           if [ "${{matrix.arch}}" == "x86_64" ] && [ "${{matrix.crt}}" == "ucrt" ]; then
-            echo "Packaging LLVM-MinGW tiny versions..."
+            echo "Packaging llvm-mingw tiny toolchains..."
 
             # Using 7z format with balanced compression for good decompression speed and size
             COMPRESS="7z a -t7z -m0=lzma2 -mx=5"
@@ -581,22 +581,22 @@ jobs:
             LLVM_FILES="llvm-libs/*"
 
             # x86_64 only
-            echo "Creating LLVM-MinGW for x86_64 target"
+            echo "Creating llvm-mingw for x86_64 target"
             eval $COMPRESS ../$NAME-tiny.7z $NAME $FILES $X86_64_FILES
             echo ""
             # x86_64 + LLVM
-            echo "Creating LLVM-MinGW for x86_64 target with LLVM dev libraries"
+            echo "Creating llvm-mingw for x86_64 target with LLVM dev libraries"
             eval $COMPRESS ../$NAME-tiny+llvm.7z $NAME $FILES $X86_64_FILES $LLVM_FILES
             echo ""
             # x86_64 + aarch64
-            echo "Creating LLVM-MinGW for x86_64 and aarch64 targets"
+            echo "Creating llvm-mingw for x86_64 and aarch64 targets"
             eval $COMPRESS ../$NAME-tiny+aarch64.7z $NAME $FILES
             echo ""
             # x86_64 + aarch64 + LLVM
-            echo "Creating LLVM-MinGW for x86_64 and aarch64 targets with LLVM dev libraries"
+            echo "Creating llvm-mingw for x86_64 and aarch64 targets with LLVM dev libraries"
             eval $COMPRESS ../$NAME-tiny+aarch64+llvm.7z $NAME $FILES $LLVM_FILES
             echo ""
-            echo "Created Tiny Packages:"
+            echo "Created Tiny Toolchains:"
             ls -lh ../*-llvm-mingw-$TAG-*.7z
           fi
 
@@ -615,8 +615,12 @@ jobs:
           path: |
             llvm-mingw-*.zip
           retention-days: 7
-      - name: Upload LLVM-MinGW Tiny Packages
-        uses: actions/github-script@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+      - run: npm install -g @actions/artifact
+      - name: Upload llvm-mingw tiny toolchains
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
