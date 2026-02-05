@@ -2,9 +2,12 @@
 
 set -e
 
-# Install Essential Tools
+# Install apt-fast
+add-apt-repository ppa:apt-fast/stable
 apt-get update -qq
 apt-get install -y -o Dpkg::Use-Pty=0 apt-fast
+
+# Install Essential Tools
 apt-fast install -y -o Dpkg::Use-Pty=0 \
     wget curl software-properties-common \
     git git-lfs \
@@ -14,6 +17,7 @@ apt-fast install -y -o Dpkg::Use-Pty=0 \
     autoconf automake autopoint libtool pkg-config \
     zip unzip bzip2 xz-utils p7zip-full \
     gettext less
+
 apt-get clean -y
 
 git config --global http.retry 3
