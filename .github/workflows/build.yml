@@ -552,12 +552,17 @@ jobs:
           apt-get update -qq && apt-get install -qy libltdl-dev swig autoconf-archive
           ./build-cross-tools.sh /opt/llvm-mingw $(pwd)/install/llvm-mingw ${{matrix.arch}} --with-python --with-zstd --with-busybox --move-llvm --thinlto --pgo
           .github/workflows/store-version.sh install/llvm-mingw/versions.txt
+      - name: Create archives
+        env:
+          TAG: ${{needs.prepare.outputs.TAG}}
+        run: |
+          set -e
           cd install
           NAME=windows-x86_64-llvm-mingw-$TAG-${{matrix.crt}}-${{matrix.arch}}
           mv llvm-mingw $NAME
 
-          # Create llvm-mingw tiny version toolchain
-          if [ "${{matrix.arch}}" == "x86_64" ] && [ "${{matrix.crt}}" == "ucrt" ]; then
+          # Create llvm-mingw tiny toolchain archives
+          if [ "${{matrix.arch}}" = "x86_64" ] && [ "${{matrix.crt}}" = "ucrt" ]; then
             echo "Packaging llvm-mingw tiny toolchains..."
 
             # Using 7z format with balanced compression for good decompression speed and size
@@ -578,7 +583,7 @@ jobs:
               -x!$NAME/aarch64-w64-mingw32 \
               -x!$NAME/lib/clang/*/lib/windows/*-aarch64* \
             "
-            LLVM_FILES="llvm-libs/*"
+            LLVM_EXTRA_FILES="llvm-libs/*"
 
             # x86_64 only
             echo "Creating llvm-mingw for x86_64 target"
@@ -586,7 +591,7 @@ jobs:
             echo ""
             # x86_64 + LLVM
             echo "Creating llvm-mingw for x86_64 target with LLVM dev libraries"
-            eval $COMPRESS ../$NAME-tiny+llvm.7z $NAME $FILES $X86_64_FILES $LLVM_FILES
+            eval $COMPRESS ../$NAME-tiny+llvm.7z $NAME $FILES $X86_64_FILES $LLVM_EXTRA_FILES
             echo ""
             # x86_64 + aarch64
             echo "Creating llvm-mingw for x86_64 and aarch64 targets"
@@ -594,13 +599,13 @@ jobs:
             echo ""
             # x86_64 + aarch64 + LLVM
             echo "Creating llvm-mingw for x86_64 and aarch64 targets with LLVM dev libraries"
-            eval $COMPRESS ../$NAME-tiny+aarch64+llvm.7z $NAME $FILES $LLVM_FILES
+            eval $COMPRESS ../$NAME-tiny+aarch64+llvm.7z $NAME $FILES $LLVM_EXTRA_FILES
             echo ""
             echo "Created Tiny Toolchains:"
             ls -lh ../*-llvm-mingw-$TAG-*.7z
           fi
 
-          # Create LLVM-MinGW ZIP Package
+          # Create llvm-mingew zip archive
           zip -9rq ../$NAME.zip $NAME
       - name: Save cache
         if: steps.cache-tarballs.outputs.cache-hit != 'true'
