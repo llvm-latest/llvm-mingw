@@ -9,11 +9,37 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 env:
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
+  upload-multiple-artifacts-at-once:
+    runs-on: ubuntu-latest
+    container: ubuntu:devel
+    steps:
+      - name: Create test artifacts
+        run: |
+          echo "Hello, world!" > hello_1.txt
+          echo "Hello, world!" > hello_2.txt
+          echo "Hello, world!" > hello_3.txt
+      - uses: llvm-latest/github-script-with-artifact@main
+        with:
+          script: |
+            const fs = require('fs');
+            const files = fs.readdirSync('.').filter(file => file.endsWith('.txt'));
+            for (const file of files) {
+                console.log(`>>> Uploading ${file}...`);
+                const uploadResponse = await artifact.uploadArtifact(
+                    file,   // Name
+                    [file], // Files
+                    '.',    // Root Directory
+                    { compressionLevel: 0 }
+                );
+                console.log(`>>> Uploaded ${file} - ID: ${uploadResponse.id}`);
+            }
+
   linux-cross-aarch64:
     runs-on: ubuntu-latest
     container:
