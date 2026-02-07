@@ -558,55 +558,55 @@ jobs:
         run: |
           set -e
           cd install
-          NAME=windows-x86_64-llvm-mingw-$TAG-${{matrix.crt}}-${{matrix.arch}}
+          # 1. Create llvm-mingew zip archive
+          NAME=llvm-mingw-$TAG-${{matrix.crt}}-windows-${{matrix.arch}}
           mv llvm-mingw $NAME
+          zip -9rq ../$NAME.zip $NAME
 
-          # Create llvm-mingw tiny toolchain archives
+          # 2. Create 4 llvm-mingw archives that only supports 64-bit target
           if [ "${{matrix.arch}}" = "x86_64" ] && [ "${{matrix.crt}}" = "ucrt" ]; then
-            echo "Packaging llvm-mingw tiny toolchains..."
-
+            echo "Packaging llvm-mingw toolchains..."
+            ROOT=$NAME
+            PREFIX=windows-x86_64-llvm-mingw-$TAG-${{matrix.crt}}
             # Using 7z format with balanced compression for good decompression speed and size
             COMPRESS="7z a -t7z -m0=lzma2 -mx=5"
             FILES=" \
-              -x!$NAME/bin/i686-* \
-              -x!$NAME/bin/arm64ec-* \
-              -x!$NAME/bin/armv7-* \
-              -x!$NAME/i686-w64-mingw32 \
-              -x!$NAME/arm64ec-w64-mingw32 \
-              -x!$NAME/armv7-w64-mingw32 \
-              -x!$NAME/lib/clang/*/lib/linux \
-              -x!$NAME/lib/clang/*/lib/windows/*-i386* \
-              -x!$NAME/lib/clang/*/lib/windows/*-arm* \
+              -x!$ROOT/bin/i686-* \
+              -x!$ROOT/bin/arm64ec-* \
+              -x!$ROOT/bin/armv7-* \
+              -x!$ROOT/i686-w64-mingw32 \
+              -x!$ROOT/arm64ec-w64-mingw32 \
+              -x!$ROOT/armv7-w64-mingw32 \
+              -x!$ROOT/lib/clang/*/lib/linux \
+              -x!$ROOT/lib/clang/*/lib/windows/*-i386* \
+              -x!$ROOT/lib/clang/*/lib/windows/*-arm* \
             "
             X86_64_FILES=" \
-              -x!$NAME/bin/aarch64-* \
-              -x!$NAME/aarch64-w64-mingw32 \
-              -x!$NAME/lib/clang/*/lib/windows/*-aarch64* \
+              -x!$ROOT/bin/aarch64-* \
+              -x!$ROOT/aarch64-w64-mingw32 \
+              -x!$ROOT/lib/clang/*/lib/windows/*-aarch64* \
             "
             LLVM_EXTRA_FILES="llvm-libs/*"
 
             # x86_64 only
             echo "Creating llvm-mingw for x86_64 target"
-            eval $COMPRESS ../$NAME-tiny.7z $NAME $FILES $X86_64_FILES
+            eval $COMPRESS ../$PREFIX-tiny.7z $ROOT $FILES $X86_64_FILES
             echo ""
             # x86_64 + LLVM
             echo "Creating llvm-mingw for x86_64 target with LLVM dev libraries"
-            eval $COMPRESS ../$NAME-tiny+llvm.7z $NAME $FILES $X86_64_FILES $LLVM_EXTRA_FILES
+            eval $COMPRESS ../$PREFIX-tiny+llvm.7z $ROOT $FILES $X86_64_FILES $LLVM_EXTRA_FILES
             echo ""
             # x86_64 + aarch64
             echo "Creating llvm-mingw for x86_64 and aarch64 targets"
-            eval $COMPRESS ../$NAME-tiny+aarch64.7z $NAME $FILES
+            eval $COMPRESS ../$PREFIX-tiny+aarch64.7z $ROOT $FILES
             echo ""
             # x86_64 + aarch64 + LLVM
             echo "Creating llvm-mingw for x86_64 and aarch64 targets with LLVM dev libraries"
-            eval $COMPRESS ../$NAME-tiny+aarch64+llvm.7z $NAME $FILES $LLVM_EXTRA_FILES
+            eval $COMPRESS ../$PREFIX-tiny+aarch64+llvm.7z $ROOT $FILES $LLVM_EXTRA_FILES
             echo ""
             echo "Created Tiny Toolchains:"
-            ls -lh ../*-llvm-mingw-$TAG-*.7z
+            ls -lh ../*-llvm-mingw-*.7z
           fi
-
-          # Create llvm-mingew zip archive
-          zip -9rq ../$NAME.zip $NAME
       - name: Save cache
         if: steps.cache-tarballs.outputs.cache-hit != 'true'
         run: |
