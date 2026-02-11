@@ -119,7 +119,7 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
         # was a plain number (as if the original name was clang-7); if it wasn't
         # empty, remove the tool.
         if [ "$(echo $suffix | tr -d '[0-9]')" != "" ]; then
-            remove_or_move $i
+            remove_with_log $i
         fi
         ;;
     libclang.dll)
@@ -128,7 +128,7 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
         ;;
     ld64.lld|wasm-ld)
         if [ -e $i ]; then
-            remove_or_move $i
+            remove_with_log $i
         fi
         ;;
     lldb|lldb-server|lldb-argdumper|lldb-instr|lldb-mi|lldb-vscode|lldb-dap)
@@ -138,7 +138,7 @@ for i in amdgpu-arch bugpoint c-index-test clang-* clangd clangd-* darwin-debug 
             remove_or_move $i
         elif [ -L $i ] && [ ! -e $(readlink $i) ]; then
             # Remove dangling symlinks
-            remove_or_move $i
+            remove_with_log $i
         fi
         ;;
     esac
