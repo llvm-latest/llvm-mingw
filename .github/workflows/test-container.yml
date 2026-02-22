@@ -19,6 +19,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          # echo "cat /etc/apt/apt-mirrors.txt"
+          # cat /etc/apt/apt-mirrors.txt
+          # echo "=================================="
+          # echo "cat /etc/apt/sources.list.d/ubuntu.sources"
+          # cat /etc/apt/sources.list.d/ubuntu.sources
+          # echo "=================================="
+          # sudo sed -i 's/noble/devel/g' /etc/apt/sources.list.d/ubuntu.sources
+          # cat /etc/apt/sources.list.d/ubuntu.sources
+
+          sudo rm -rf /etc/apt/apt-mirrors.txt
+          sudo rm -rf /etc/apt/sources.list.d
           sudo tee /etc/apt/sources.list > /dev/null <<EOF
           deb https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
           # deb-src https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
@@ -38,7 +49,7 @@ jobs:
       - run: |
           sudo add-apt-repository ppa:apt-fast/stable
           sudo apt-get update -qq && sudo apt-get install -qqy -o Dpkg::Use-Pty=0 apt-fast
-          sudo apt-fast install -qy -o Dpkg::Use-Pty=0 gcc g++ clang
+          sudo apt-fast install -qqy -o Dpkg::Use-Pty=0 gcc g++ clang
           echo "=================================="
           ls -lL --time-style=full-iso /usr/bin/gcc
           gcc --version
@@ -51,7 +62,6 @@ jobs:
 
   upload-multiple-artifacts-at-once:
     runs-on: ubuntu-latest
-    container: ubuntu:devel
     steps:
       - name: Create test artifacts
         run: |
