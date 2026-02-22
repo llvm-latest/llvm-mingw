@@ -19,8 +19,9 @@ set -e
 . ./logging.sh
 
 : ${LLVM_REPOSITORY:=https://github.com/llvm/llvm-project.git}
-: ${LLVM_VERSION:=c04b00de750801238bc85f11874c66a41b61b2c5}
+: ${LLVM_VERSION:=8701cfc0008c4756f04f9839fd4afbb3f112bdad}
 ASSERTS=OFF
+WITH_CLANG=1
 unset HOST
 BUILDDIR="build"
 LINK_DYLIB=ON
