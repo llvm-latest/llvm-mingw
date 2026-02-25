@@ -537,11 +537,12 @@ jobs:
           # 1. Create llvm-mingew zip archive
           NAME=llvm-mingw-$TAG-${{matrix.crt}}-windows-${{matrix.arch}}
           mv llvm-mingw $NAME
+          echo "Packaging llvm-mingw toolchains..."
           zip -9rq ../$NAME.zip $NAME
 
           # 2. Create 4 llvm-mingw archives that only supports 64-bit target
           if [ "${{matrix.arch}}" = "x86_64" ] && [ "${{matrix.crt}}" = "ucrt" ]; then
-            echo "Packaging llvm-mingw toolchains..."
+            echo "Packaging llvm-mingw tiny toolchains..."
             ROOT=$NAME
             PREFIX=windows-x86_64-llvm-mingw-$TAG-${{matrix.crt}}
             # COMPRESS="7z a -t7z -mx=6"
@@ -573,7 +574,7 @@ jobs:
             eval $COMPRESS ../$PREFIX-tiny+aarch64.7z $ROOT $FILES
             echo ""
 
-            mv $LLVM_EXTRA_FILES/* $ROOT
+            mv $LLVM_EXTRA_FILES $ROOT
             # x86_64 + LLVM
             echo "Creating llvm-mingw for x86_64 target with LLVM dev libraries"
             eval $COMPRESS ../$PREFIX-tiny+llvm.7z $ROOT $FILES $X86_64_FILES
