@@ -76,7 +76,7 @@ jobs:
 
   linux-stage1:
     needs: [prepare]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - name: Install Dependencies
@@ -118,7 +118,7 @@ jobs:
 
   linux-profile:
     needs: [prepare, linux-stage1]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - name: Install Dependencies
@@ -152,7 +152,7 @@ jobs:
   # Build a cross compiler for Linux, targeting Windows.
   linux:
     needs: [prepare, linux-stage1, linux-profile]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - name: Install Dependencies
@@ -206,7 +206,7 @@ jobs:
   # libraries that were built in the 'linux-stage1' step above.
   linux-cross-aarch64:
     needs: [linux-stage1, linux-profile, prepare]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - name: Install Dependencies
@@ -274,7 +274,7 @@ jobs:
   linux-asserts:
     if: github.event_name == 'schedule'
     needs: [prepare]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - name: Install Dependencies
@@ -469,7 +469,7 @@ jobs:
   # architectures). The binaries built here match actual releases quite closely.
   linux-cross-windows:
     needs: [linux-stage1, linux-profile, prepare]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     strategy:
       fail-fast: false
       matrix:
