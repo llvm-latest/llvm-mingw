@@ -563,7 +563,7 @@ jobs:
               -x!$ROOT/aarch64-w64-mingw32 \
               -x!$ROOT/lib/clang/*/lib/windows/*-aarch64* \
             "
-            LLVM_EXTRA_FILES="llvm-libs/*"
+            LLVM_EXTRA_FILES="llvm-libs"
 
             # x86_64 only
             echo "Creating llvm-mingw for x86_64 target"
@@ -574,7 +574,10 @@ jobs:
             eval $COMPRESS ../$PREFIX-tiny+aarch64.7z $ROOT $FILES
             echo ""
 
-            mv $LLVM_EXTRA_FILES $ROOT
+            mv $LLVM_EXTRA_FILES/bin/* $ROOT/bin
+            mv $LLVM_EXTRA_FILES/include/* $ROOT/include
+            mv $LLVM_EXTRA_FILES/lib/* $ROOT/lib
+
             # x86_64 + LLVM
             echo "Creating llvm-mingw for x86_64 target with LLVM dev libraries"
             eval $COMPRESS ../$PREFIX-tiny+llvm.7z $ROOT $FILES $X86_64_FILES
