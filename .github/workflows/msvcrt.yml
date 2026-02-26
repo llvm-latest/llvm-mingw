@@ -46,7 +46,7 @@ jobs:
   # Build a new toolchain with a different CRT choice.
   linux-msvcrt:
     needs: [prepare]
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -92,7 +92,7 @@ jobs:
 
   linux-cross-windows:
     needs: [linux-msvcrt, prepare]
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:

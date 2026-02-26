@@ -16,7 +16,7 @@ env:
 
 jobs:
   install-latest-toolchains:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     steps:
       - run: |
           # echo "cat /etc/apt/apt-mirrors.txt"
