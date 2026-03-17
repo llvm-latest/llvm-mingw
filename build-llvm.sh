@@ -19,7 +19,7 @@ set -e
 . ./logging.sh
 
 : ${LLVM_REPOSITORY:=https://github.com/llvm/llvm-project.git}
-: ${LLVM_VERSION:=f46a5153850c1303d687233d4adf699b01041da8}
+: ${LLVM_VERSION:=19fd930bf00c62d9ebdc4fee04a1be981d0d971c}
 ASSERTS=OFF
 unset HOST
 BUILDDIR="build"
@@ -71,6 +71,9 @@ while [ $# -gt 0 ]; do
         ;;
     --with-python)
         WITH_PYTHON=1
+        ;;
+    --with-zlib)
+        WITH_ZLIB=1
         ;;
     --with-zstd)
         WITH_ZSTD=1
@@ -311,11 +314,20 @@ else
     fi
 fi
 
+if [ -n "$WITH_ZLIB" ]; then
+    # TODO: LLVM not supprot static linking with zlib
+    # CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZLIB=FORCE_ON"
+    # ZLIB_INCLUDE_DIR="$PREFIX/include/zlib-ng"
+    # ZLIB_LIB="$PREFIX/lib/libz.a"
+    # CMAKEFLAGS="$CMAKEFLAGS -DZLIB_INCLUDE_DIR=$ZLIB_INCLUDE_DIR"
+    # CMAKEFLAGS="$CMAKEFLAGS -DZLIB_LIBRARY=$ZLIB_LIB"
+fi
+
 if [ -n "$WITH_ZSTD" ]; then
-    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=ON"
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=FORCE_ON"
     CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_STATIC_ZSTD=ON"
     ZSTD_INCLUDE_DIR="$PREFIX/include/zstd"
-    ZSTD_LIB="$(echo $PREFIX/lib/libzstd.a)"
+    ZSTD_LIB="$PREFIX/lib/libzstd.a"
     CMAKEFLAGS="$CMAKEFLAGS -Dzstd_INCLUDE_DIR=$ZSTD_INCLUDE_DIR"
     CMAKEFLAGS="$CMAKEFLAGS -Dzstd_LIBRARY=$ZSTD_LIB"
 fi
