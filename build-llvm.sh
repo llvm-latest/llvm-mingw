@@ -19,7 +19,7 @@ set -e
 . ./logging.sh
 
 : ${LLVM_REPOSITORY:=https://github.com/llvm/llvm-project.git}
-: ${LLVM_VERSION:=19fd930bf00c62d9ebdc4fee04a1be981d0d971c}
+: ${LLVM_VERSION:=c727cd9a4b21cbaa5b5c2b1cfe8d4a56c72e3da1}
 ASSERTS=OFF
 unset HOST
 BUILDDIR="build"
@@ -315,12 +315,12 @@ else
 fi
 
 if [ -n "$WITH_ZLIB" ]; then
-    echo "TODO: LLVM not supprot static linking with zlib"
+    echo "-- TODO: LLVM not supprot static linking with zlib"
     # CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZLIB=FORCE_ON"
-    # ZLIB_INCLUDE_DIR="$PREFIX/include/zlib-ng"
-    # ZLIB_LIB="$PREFIX/lib/libz.a"
-    # CMAKEFLAGS="$CMAKEFLAGS -DZLIB_INCLUDE_DIR=$ZLIB_INCLUDE_DIR"
-    # CMAKEFLAGS="$CMAKEFLAGS -DZLIB_LIBRARY=$ZLIB_LIB"
+    ZLIB_INCLUDE_DIR="$PREFIX/include/zlib-ng"
+    ZLIB_LIB="$PREFIX/lib/libz.a"
+    CMAKEFLAGS="$CMAKEFLAGS -DZLIB_INCLUDE_DIR=$ZLIB_INCLUDE_DIR"
+    CMAKEFLAGS="$CMAKEFLAGS -DZLIB_LIBRARY=$ZLIB_LIB"
 fi
 
 if [ -n "$WITH_ZSTD" ]; then
