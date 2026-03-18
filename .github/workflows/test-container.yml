@@ -22,7 +22,8 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
-      - run: |
+      - name: Setup apt sources
+        run: |
           echo "=================================="
           echo "cat /etc/apt/apt-mirrors.txt"
           cat /etc/apt/apt-mirrors.txt
@@ -47,7 +48,8 @@ jobs:
           deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ devel-security main restricted universe multiverse
           deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ devel-updates main restricted universe multiverse
           EOF
-      - run: |
+      - name: Install toolchains
+        run: |
           sudo dpkg --add-architecture arm64
           sudo apt-get update -qq
           sudo apt-get install -qqy -o Dpkg::Use-Pty=0 \
