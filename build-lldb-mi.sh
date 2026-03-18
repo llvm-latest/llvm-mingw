@@ -125,7 +125,6 @@ if [ -n "$HOST" ]; then
     if [ -n "$WITH_CLANG" ]; then
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER=clang"
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER=clang++"
-        CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_LINKER=${USE_LINKER:-lld}"
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_ASM_COMPILER_TARGET=$HOST"
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_C_COMPILER_TARGET=$HOST"
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER_TARGET=$HOST"
@@ -144,7 +143,7 @@ if [ -n "$HOST" ]; then
         ;;
     *-linux*)
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Linux"
-        if [ -n "$ARCH" == "aarch64" ]; then
+        if [ -n "$ARCH" = "aarch64" ]; then
             LINUX_CROSS_AARCH64=1
         fi
         ;;
