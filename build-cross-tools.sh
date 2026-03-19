@@ -114,7 +114,7 @@ fi
 
 ./build-llvm.sh $PREFIX --host=$HOST $LLVM_ARGS
 if [ -z "$NO_LLDB" ] && [ -z "$NO_LLDB_MI" ]; then
-    ./build-lldb-mi.sh $PREFIX --host=$HOST
+    ./build-lldb-mi.sh $PREFIX --host=$HOST ${WITH_ZLIB+--with-zlib} ${WITH_ZSTD+--with-zstd}
 fi
 if [ -z "$FULL_LLVM" ]; then
     ./strip-llvm.sh $PREFIX --host=$HOST ${MOVE_LLVM:+--move-llvm} --release-build

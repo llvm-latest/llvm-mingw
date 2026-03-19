@@ -34,6 +34,12 @@ while [ $# -gt 0 ]; do
     --with-clang)
         WITH_CLANG=1
         ;;
+    --with-zlib)
+        WITH_ZLIB=1
+        ;;
+    --with-zstd)
+        WITH_ZSTD=1
+        ;;
     *)
         PREFIX="$1"
         ;;
@@ -136,6 +142,9 @@ if [ -n "$HOST" ]; then
         ;;
     *-linux*)
         CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_SYSTEM_NAME=Linux"
+        if [ "$ARCH" = "aarch64" ]; then
+            LINUX_CROSS_AARCH64=1
+        fi
         ;;
     *)
         echo "Unrecognized host $HOST"
@@ -181,6 +190,45 @@ if [ "$(uname)" = "Darwin" ]; then
     : ${MACOS_REDIST_VERSION:=10.12}
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_ARCHITECTURES=$ARCH_LIST"
     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_OSX_DEPLOYMENT_TARGET=$MACOS_REDIST_VERSION"
+fi
+
+if [ -n "$WITH_ZLIB" ]; then
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZLIB=FORCE_ON"
+    ZLIB_INCLUDE_DIR="$PREFIX/include/zlib-ng"
+    ZLIB_LIB="$PREFIX/lib/libz.a"
+    CMAKEFLAGS="$CMAKEFLAGS -DZLIB_INCLUDE_DIR=$ZLIB_INCLUDE_DIR"
+    CMAKEFLAGS="$CMAKEFLAGS -DZLIB_LIBRARY=$ZLIB_LIB"
+    # Fix not found zlib-ng include path
+    # if [ "$(uname)" = "Linux" ] && [ -n "$TARGET_WINDOWS" ]; then
+    #     CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_FLAGS=-I$ZLIB_INCLUDE_DIR"
+    # fi
+else
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZLIB=FORCE_ON"
+
+    if [ -n "$LINUX_CROSS_AARCH64" ]; then
+        ZLIB_INCLUDE_DIR="/usr/include"
+        ZLIB_LIB="/usr/lib/aarch64-linux-gnu/libz.so"
+        CMAKEFLAGS="$CMAKEFLAGS -DZLIB_INCLUDE_DIR=$ZLIB_INCLUDE_DIR"
+        CMAKEFLAGS="$CMAKEFLAGS -DZLIB_LIBRARY=$ZLIB_LIB"
+    fi
+fi
+
+if [ -n "$WITH_ZSTD" ]; then
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=FORCE_ON"
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_USE_STATIC_ZSTD=ON"
+    ZSTD_INCLUDE_DIR="$PREFIX/include/zstd"
+    ZSTD_LIB="$PREFIX/lib/libzstd.a"
+    CMAKEFLAGS="$CMAKEFLAGS -Dzstd_INCLUDE_DIR=$ZSTD_INCLUDE_DIR"
+    CMAKEFLAGS="$CMAKEFLAGS -Dzstd_LIBRARY=$ZSTD_LIB"
+else
+    CMAKEFLAGS="$CMAKEFLAGS -DLLVM_ENABLE_ZSTD=FORCE_ON"
+
+    if [ -n "$LINUX_CROSS_AARCH64" ]; then
+        ZSTD_INCLUDE_DIR="/usr/include"
+        ZSTD_LIB="/usr/lib/aarch64-linux-gnu/libzstd.so"
+        CMAKEFLAGS="$CMAKEFLAGS -Dzstd_INCLUDE_DIR=$ZSTD_INCLUDE_DIR"
+        CMAKEFLAGS="$CMAKEFLAGS -Dzstd_LIBRARY=$ZSTD_LIB"
+    fi
 fi
 
 cd lldb-mi
