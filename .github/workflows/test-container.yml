@@ -15,19 +15,54 @@ env:
   DEBIAN_FRONTEND: noninteractive
 
 jobs:
-  test-linux-cross-aarch64:
+  test-linux-cross-windows:
     # if: false
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: i686, crt: ucrt }
+          - { arch: x86_64, crt: ucrt }
+          - { arch: armv7, crt: ucrt }
+          - { arch: aarch64, crt: ucrt }
     steps:
+      - uses: actions/checkout@v6
+      - name: Install Dependencies
+        run: ./install-dependencies.sh
+      - uses: rui314/setup-mold@v1
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         with:
           detached: true
+      - name: Setup LLVM-MinGW
+        run: |
+          LLVM_MINGW_VER=20260311
+          curl -LO "https://github.com/mstorsjo/llvm-mingw/releases/download/$LLVM_MINGW_VER/llvm-mingw-$LLVM_MINGW_VER-ucrt-ubuntu-22.04-x86_64.tar.xz"
+          tar -Jxf llvm-mingw-*.tar.xz
+          rm llvm-mingw-*.tar.xz
+          mv llvm-mingw* /opt/llvm-mingw
+          echo /opt/llvm-mingw/bin >> $GITHUB_PATH
+      - name: Build
+        env:
+          COMPILER_LAUNCHER: ccache
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -qy libltdl-dev swig autoconf-archive
+          ./build-cross-tools.sh /opt/llvm-mingw $(pwd)/install/llvm-mingw ${{matrix.arch}} --with-zlib --with-zstd
+
+  test-linux-cross-aarch64:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v6
       - name: Install Dependencies
         run: ./install-dependencies.sh --with-arm64
       - uses: rui314/setup-mold@v1
-      - name: Setup stage1 Clang
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+      - name: Setup LLVM-MinGW
         run: |
           LLVM_MINGW_VER=20260311
           curl -LO "https://github.com/mstorsjo/llvm-mingw/releases/download/$LLVM_MINGW_VER/llvm-mingw-$LLVM_MINGW_VER-ucrt-ubuntu-22.04-x86_64.tar.xz"
@@ -137,7 +172,7 @@ jobs:
                 );
             }
 
-  linux-cross-aarch64:
+  test-docker-linux-cross-aarch64:
     if: false
     runs-on: ubuntu-latest
     container:
