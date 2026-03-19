@@ -46,8 +46,8 @@ fi
 
 # Install apt-fast
 sudo add-apt-repository ppa:apt-fast/stable -y
-# sudo apt-get update -qq
 sudo apt-get install -y -o Dpkg::Use-Pty=0 apt-fast
+# sudo apt-get update -qq
 
 if [ -f /.dockerenv ] || grep -q 'docker\|lxc' /proc/1/cgroup 2>/dev/null; then
     sudo apt-get install -y -o Dpkg::Use-Pty=0 software-properties-common
@@ -68,7 +68,6 @@ sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
 # Install arm64 dependencies
 if [ -n "$WITH_ARM64" ]; then
 sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
-    binutils-dev:arm64 \
     zlib1g-dev:arm64 libzstd-dev:arm64
 fi
 
