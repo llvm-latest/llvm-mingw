@@ -230,7 +230,7 @@ if [ -z "$NO_TOOLS" ]; then
             exit 0
         fi
         if [ -z "$NO_LLDB" ] && [ -z "$NO_LLDB_MI" ]; then
-            ./build-lldb-mi.sh $PREFIX $HOST_ARGS ${WITH_ZLIB+--with-zlib} ${WITH_ZSTD+--with-zstd}
+            ./build-lldb-mi.sh $PREFIX $HOST_ARGS
         fi
         if [ -z "$FULL_LLVM" ]; then
             ./strip-llvm.sh $PREFIX $HOST_ARGS ${RELEASE_BUILD+--release-build}
