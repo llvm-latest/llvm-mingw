@@ -6,6 +6,15 @@ on:
     paths:
       - ".github/workflows/test-container.yml"
   workflow_dispatch:
+    inputs:
+      enable_linux_cross_windows:
+        description: 'Enable linux cross windows build'
+        type: boolean
+        default: false
+      enable_linux_cross_aarch64:
+        description: 'Enable linux cross aarch64 build'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -16,7 +25,7 @@ env:
 
 jobs:
   test-linux-cross-windows:
-    if: false
+    if: github.event_name == 'workflow_dispatch' && inputs.enable_linux_cross_windows
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -51,7 +60,7 @@ jobs:
           ./build-cross-tools.sh /opt/llvm-mingw $(pwd)/install/llvm-mingw ${{matrix.arch}} --with-zlib --with-zstd
 
   test-linux-cross-aarch64:
-    if: false
+    if: github.event_name == 'workflow_dispatch' && inputs.enable_linux_cross_aarch64
     runs-on: ubuntu-latest
     steps:
       - name: Setup tmate session
@@ -94,6 +103,7 @@ jobs:
       #     detached: true
       - name: Setup apt sources
         run: |
+          set -e
           echo "=================================="
           echo "cat /etc/apt/apt-mirrors.txt"
           cat /etc/apt/apt-mirrors.txt
@@ -120,6 +130,7 @@ jobs:
           EOF
       - name: Install toolchains
         run: |
+          set -e
           sudo dpkg --add-architecture arm64
           sudo apt-get update -qq
           sudo apt-get install -qqy -o Dpkg::Use-Pty=0 \
@@ -128,6 +139,7 @@ jobs:
             zlib1g-dev:arm64 libzstd-dev:arm64
       - name: Verify toolchains
         run: |
+          set -e
           echo "=================================="
           lsd -lL /usr/bin/gcc
           gcc --version
