@@ -16,7 +16,7 @@ env:
 
 jobs:
   test-linux-cross-aarch64:
-    if: false
+    # if: false
     runs-on: ubuntu-latest
     steps:
       - name: Setup tmate session
