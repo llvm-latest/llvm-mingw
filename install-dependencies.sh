@@ -20,6 +20,7 @@ if [ "$CI" = "true" ]; then
     sudo rm -rf /etc/apt/sources.list.d
 
     if [ -n "$WITH_ARM64" ]; then
+        sudo dpkg --add-architecture arm64
         sudo tee /etc/apt/sources.list > /dev/null <<EOF
 deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
 deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel-backports main restricted universe multiverse
@@ -41,10 +42,6 @@ deb https://archive.ubuntu.com/ubuntu/ devel-security main restricted universe m
 deb https://archive.ubuntu.com/ubuntu/ devel-updates main restricted universe multiverse
 EOF
     fi
-fi
-
-if [ -n "$WITH_ARM64" ]; then
-    sudo dpkg --add-architecture arm64
 fi
 
 # Install apt-fast
