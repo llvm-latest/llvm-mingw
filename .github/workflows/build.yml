@@ -86,7 +86,7 @@ jobs:
         uses: llvm-latest/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
-          max-size: 600M
+          max-size: 500M
           sloppiness: time_macros,include_file_mtime,include_file_ctime
       - name: Build
         env:
@@ -338,7 +338,7 @@ jobs:
         uses: llvm-latest/ccache-action@main
         with:
           ccache-key-prefix: ccache_${{ github.job }}
-          max-size: 600M
+          max-size: 500M
           sloppiness: time_macros,file_stat_matches,include_file_mtime,include_file_ctime
       - name: Build
         env:
