@@ -60,7 +60,10 @@ fi
 
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
-export PATH="$PREFIX/bin:$PATH"
+# Use host clang to increase native build compiler-rt speed
+if [ -z "$NATIVE" ]; then
+    export PATH="$PREFIX/bin:$PATH"
+fi
 
 : ${ARCHS:=${TOOLCHAIN_ARCHS-i686 x86_64 armv7 aarch64 arm64ec}}
 
@@ -144,8 +147,8 @@ for arch in $ARCHS; do
         -DCMAKE_SYSTEM_NAME=Windows \
         -DCMAKE_AR="$PREFIX/bin/llvm-ar" \
         -DCMAKE_RANLIB="$PREFIX/bin/llvm-ranlib" \
-        -DCMAKE_C_COMPILER_WORKS=1 \
-        -DCMAKE_CXX_COMPILER_WORKS=1 \
+        -DCMAKE_C_COMPILER_WORKS=TRUE \
+        -DCMAKE_CXX_COMPILER_WORKS=TRUE \
         -DCMAKE_C_COMPILER_TARGET=$arch-w64-windows-gnu \
         -DCOMPILER_RT_DEFAULT_TARGET_ONLY=TRUE \
         -DCOMPILER_RT_USE_BUILTINS_LIBRARY=TRUE \
