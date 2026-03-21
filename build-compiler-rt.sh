@@ -115,9 +115,6 @@ if [ -n "$NATIVE" ]; then
         -DCMAKE_C_COMPILER=clang \
         -DCMAKE_CXX_COMPILER=clang++ \
         -DLLVM_CONFIG_PATH="" \
-        -DCMAKE_FIND_ROOT_PATH=$PREFIX \
-        -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
-        -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY \
         -DCOMPILER_RT_USE_LIBCXX=OFF \
         $CMAKEFLAGS \
         $SRC_DIR
