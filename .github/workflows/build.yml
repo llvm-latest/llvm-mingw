@@ -129,6 +129,12 @@ jobs:
       - name: Install Dependencies
         run: ./install-dependencies.sh
       - uses: rui314/setup-mold@v1
+      - name: Setup ccache
+        uses: llvm-latest/ccache-action@main
+        with:
+          ccache-key-prefix: ccache_${{ github.job }}
+          max-size: 500M
+          sloppiness: time_macros,include_file_mtime,include_file_ctime
       - uses: actions/download-artifact@v8
         with:
           name: linux-stage1-ucrt-x86_64-toolchain
@@ -141,10 +147,13 @@ jobs:
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
           SOURCE_DATE_EPOCH: ${{needs.prepare.outputs.COMMIT_DATE_UNIX}}
+          COMPILER_LAUNCHER: ccache
         run: |
           # Build LLVM in mostly the same way as it is going to be built in the
           # final form.
-          LLVM_CMAKEFLAGS="-DLLVM_ENABLE_LIBXML2=OFF -DLLDB_ENABLE_PYTHON=OFF" ./build-all.sh --profile $(pwd)/llvm-mingw-stage1
+          LLVM_CMAKEFLAGS="-DLLVM_ENABLE_LIBXML2=OFF -DLLDB_ENABLE_PYTHON=OFF" \
+            ./build-all.sh --profile $(pwd)/llvm-mingw-stage1 \
+            --build-instrumented-with-host-clang # for speedup building with ccache
       - uses: actions/upload-artifact@v6
         with:
           name: profile

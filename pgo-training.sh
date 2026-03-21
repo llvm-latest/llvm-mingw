@@ -28,8 +28,8 @@ if [ $# -lt 2 ]; then
     echo $0 build stage1
     exit 1
 fi
-PREFIX="$1"
-STAGE1="$2"
+PREFIX="$1" # llvm-project/llvm/build-instrumented
+STAGE1="$2" # stage1 clang root
 PREFIX="$(cd "$PREFIX" && pwd)"
 
 MAKE=make

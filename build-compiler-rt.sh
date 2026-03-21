@@ -60,7 +60,7 @@ fi
 
 mkdir -p "$PREFIX"
 PREFIX="$(cd "$PREFIX" && pwd)"
-# Use host clang to increase native build compiler-rt speed
+# Use host Clang with ccache to accelerate the stage1 compiler-rt build
 if [ -z "$NATIVE" ]; then
     export PATH="$PREFIX/bin:$PATH"
 fi
