@@ -136,7 +136,7 @@ jobs:
         run: |
           tar -Jxf llvm-mingw-*.tar.xz
           rm llvm-mingw-*.tar.xz
-          mv llvm-mingw* llvm-mingw-stage1
+          mv llvm-mingw-* llvm-mingw-stage1
       - name: Build
         env:
           LLVM_VERSION: ${{needs.prepare.outputs.LLVM_VERSION}}
@@ -174,7 +174,7 @@ jobs:
         run: |
           tar -Jxf llvm-mingw-*.tar.xz
           rm llvm-mingw-*.tar.xz
-          mv llvm-mingw* /opt/llvm-mingw
+          mv llvm-mingw-* /opt/llvm-mingw
       - uses: actions/download-artifact@v8
         with:
           name: profile
@@ -199,8 +199,9 @@ jobs:
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
         run: |
           cd install
-          DISTRO=ubuntu-$(grep DISTRIB_RELEASE /etc/lsb-release | cut -f 2 -d =)-$(uname -m)
-          NAME=llvm-mingw-$TAG-ucrt-$DISTRO
+          # DISTRO=ubuntu-$(grep DISTRIB_RELEASE /etc/lsb-release | cut -f 2 -d =)-$(uname -m)
+          DISTRO=linux-$(uname -m)
+          NAME=llvm-mingw-ucrt-$DISTRO
           mv llvm-mingw $NAME
           tar -Jcf ../$NAME.tar.xz --format=ustar --numeric-owner --owner=0 --group=0 --sort=name --mtime="$BUILD_DATE" $NAME
       - uses: actions/upload-artifact@v6
@@ -233,7 +234,7 @@ jobs:
         run: |
           tar -Jxf llvm-mingw-*.tar.xz
           rm llvm-mingw-*.tar.xz
-          mv llvm-mingw* /opt/llvm-mingw
+          mv llvm-mingw-* /opt/llvm-mingw
       - uses: actions/download-artifact@v8
         with:
           name: profile
@@ -262,8 +263,9 @@ jobs:
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
         run: |
           cd install
-          DISTRO=ubuntu-$(grep DISTRIB_RELEASE /etc/lsb-release | cut -f 2 -d =)-aarch64
-          NAME=llvm-mingw-$TAG-ucrt-$DISTRO
+          # DISTRO=ubuntu-$(grep DISTRIB_RELEASE /etc/lsb-release | cut -f 2 -d =)-aarch64
+          DISTRO=linux-aarch64
+          NAME=llvm-mingw-ucrt-$DISTRO
           mv llvm-mingw $NAME
           tar -Jcf ../$NAME.tar.xz --format=ustar --numeric-owner --owner=0 --group=0 --sort=name --mtime="$BUILD_DATE" $NAME
       - uses: actions/upload-artifact@v6
@@ -383,7 +385,7 @@ jobs:
         run: |
           tar -Jxf llvm-*.tar.xz
           rm llvm-*.tar.xz
-          mv llvm* $HOME/llvm
+          mv llvm-* $HOME/llvm
       - uses: actions/download-artifact@v8
         with:
           name: profile
@@ -411,7 +413,7 @@ jobs:
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
         run: |
           cd install
-          NAME=llvm-mingw-$TAG-${{matrix.crt}}-macos-${{matrix.arch}}
+          NAME=llvm-mingw-${{matrix.crt}}-macos-${{matrix.arch}}
           mv llvm-mingw $NAME
           gtar -Jcf ../$NAME.tar.xz --format=ustar --numeric-owner --owner=0 --group=0 --sort=name --mtime="$BUILD_DATE" $NAME
       - uses: actions/upload-artifact@v6
@@ -481,7 +483,7 @@ jobs:
           BUILD_DATE: ${{needs.prepare.outputs.BUILD_DATE}}
         run: |
           cd install
-          NAME=llvm-mingw-$TAG-ucrt-msys2-${{matrix.sys}}
+          NAME=llvm-mingw-ucrt-msys2-${{matrix.sys}}
           mv llvm-mingw $NAME
           tar -Jcf ../$NAME.tar.xz --format=ustar --numeric-owner --owner=0 --group=0 --sort=name --mtime="$BUILD_DATE" $NAME
       - uses: actions/upload-artifact@v6
@@ -561,16 +563,16 @@ jobs:
           set -e
           cd install
           # 1. Create llvm-mingew zip archive
-          NAME=llvm-mingw-$TAG-${{matrix.crt}}-windows-${{matrix.arch}}
+          echo "-- Compress llvm-mingw toolchains..."
+          NAME=llvm-mingw-${{matrix.crt}}-windows-${{matrix.arch}}
           mv llvm-mingw $NAME
-          echo "Packaging llvm-mingw toolchains..."
-          zip -9rq ../$NAME.zip $NAME
+          ROOT=$NAME
+          zip -9rq ../$NAME.zip $ROOT
 
           # 2. Create 4 llvm-mingw archives that only supports 64-bit target
           if [ "${{matrix.arch}}" = "x86_64" ] && [ "${{matrix.crt}}" = "ucrt" ]; then
-            echo "Packaging llvm-mingw tiny toolchains..."
-            ROOT=$NAME
-            PREFIX=windows-x86_64-llvm-mingw-$TAG-${{matrix.crt}}
+            echo "-- Compress llvm-mingw tiny toolchains..."
+            PREFIX=windows-x86_64-llvm-mingw-${{matrix.crt}}
             # COMPRESS="7z a -t7z -mx=6 -snl" # follow symlinks
             COMPRESS="7z a -t7z -mx=6" # don't follow symlinks
             FILES=" \
