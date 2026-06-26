@@ -16,6 +16,9 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$CI" = "true" ]; then
+    # Hold base-files package to skip broken system upgrade
+    sudo apt-mark hold base-files
+
     sudo rm -rf /etc/apt/apt-mirrors.txt
     sudo rm -rf /etc/apt/sources.list.d
 
