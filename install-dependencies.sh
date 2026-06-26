@@ -16,8 +16,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$CI" = "true" ]; then
-    sudo dpkg-divert --remove --no-rename --package base-files /lib32 || true
-    sudo dpkg-divert --remove --no-rename --package base-files /libo32 || true
+    dpkg-divert --listpackage base-files | awk '{print $3}' | xargs -I {} sudo dpkg-divert --remove --no-rename --package base-files {} || true
 
     sudo rm -rf /etc/apt/apt-mirrors.txt
     sudo rm -rf /etc/apt/sources.list.d
