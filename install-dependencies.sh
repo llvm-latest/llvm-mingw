@@ -16,8 +16,8 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$CI" = "true" ]; then
-    # Hold base-files package to skip broken system upgrade
-    sudo apt-mark hold base-files
+    sudo dpkg-divert --remove --no-rename --package base-files /lib32 || true
+    sudo dpkg-divert --remove --no-rename --package base-files /libo32 || true
 
     sudo rm -rf /etc/apt/apt-mirrors.txt
     sudo rm -rf /etc/apt/sources.list.d
