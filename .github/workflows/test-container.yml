@@ -144,10 +144,10 @@ jobs:
   install-latest-toolchains:
     runs-on: ubuntu-latest
     steps:
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     detached: true
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
       - name: Setup apt sources
         run: |
           set -e
