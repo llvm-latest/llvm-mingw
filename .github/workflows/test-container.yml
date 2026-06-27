@@ -142,7 +142,7 @@ jobs:
           QEMU_LD_PREFIX=/usr/aarch64-linux-gnu ./run-tests.sh $(pwd)/install/llvm-mingw
 
   install-latest-toolchains:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
@@ -180,7 +180,7 @@ jobs:
           set -e
           sudo dpkg --add-architecture arm64
           sudo apt-get update -qq
-          sudo apt-get install -qqy -o Dpkg::Use-Pty=0 \
+          sudo apt-get install -y -o Dpkg::Use-Pty=0 \
             lsd \
             gcc g++ clang \
             zlib1g-dev:arm64 libzstd-dev:arm64
