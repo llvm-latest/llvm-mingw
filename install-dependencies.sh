@@ -22,11 +22,11 @@ if [ "$CI" = "true" ]; then
     if [ -n "$WITH_ARM64" ]; then
         sudo dpkg --add-architecture arm64
         sudo tee /etc/apt/sources.list > /dev/null <<EOF
-deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
-deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel-backports main restricted universe multiverse
-deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel-proposed main restricted universe multiverse
-deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel-security main restricted universe multiverse
-deb [arch=amd64] https://archive.ubuntu.com/ubuntu/ devel-updates main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-backports main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-proposed main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-security main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-updates main restricted universe multiverse
 deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ devel main restricted universe multiverse
 deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ devel-backports main restricted universe multiverse
 deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ devel-proposed main restricted universe multiverse
@@ -35,11 +35,11 @@ deb [arch=arm64] https://ports.ubuntu.com/ubuntu-ports/ devel-updates main restr
 EOF
     else
         sudo tee /etc/apt/sources.list > /dev/null <<EOF
-deb https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
-deb https://archive.ubuntu.com/ubuntu/ devel-backports main restricted universe multiverse
-deb https://archive.ubuntu.com/ubuntu/ devel-proposed main restricted universe multiverse
-deb https://archive.ubuntu.com/ubuntu/ devel-security main restricted universe multiverse
-deb https://archive.ubuntu.com/ubuntu/ devel-updates main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-backports main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-proposed main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-security main restricted universe multiverse
+deb [arch=amd64v3] https://archive.ubuntu.com/ubuntu/ devel-updates main restricted universe multiverse
 EOF
     fi
 fi
