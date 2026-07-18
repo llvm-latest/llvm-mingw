@@ -68,6 +68,7 @@ sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
 # Install arm64 dependencies
 if [ -n "$WITH_ARM64" ]; then
 sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
+    crossbuild-essential-arm64 \
     zlib1g-dev:arm64 libzstd-dev:arm64
 fi
 
