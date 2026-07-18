@@ -329,7 +329,7 @@ jobs:
 
   macos-stage1:
     needs: [prepare]
-    runs-on: macos-latest
+    runs-on: xcode-27 # macos-latest
     steps:
       # - name: Setup mold
       #   run: brew install mold
@@ -370,7 +370,7 @@ jobs:
   # Build a cross compiler for macOS, targeting Windows.
   macos:
     needs: [prepare, macos-stage1, linux-profile]
-    runs-on: macos-latest
+    runs-on: xcode-27 # macos-latest
     strategy:
       fail-fast: false
       matrix:
