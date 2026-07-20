@@ -53,6 +53,12 @@ if [ -f /.dockerenv ] || grep -q 'docker\|lxc' /proc/1/cgroup 2>/dev/null; then
     sudo apt-get install -y -o Dpkg::Use-Pty=0 software-properties-common
 fi
 
+# Fix zlib1g-dev:arm64 install issue
+if [ -n "$WITH_ARM64" ]; then
+sudo apt-get install -y -o Dpkg::Use-Pty=0 \
+    linux-libc-dev:arm64
+fi
+
 # Install Essential Tools
 sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
     wget curl software-properties-common \
@@ -68,7 +74,6 @@ sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
 # Install arm64 dependencies
 if [ -n "$WITH_ARM64" ]; then
 sudo apt-fast install -y -o Dpkg::Use-Pty=0 \
-    crossbuild-essential-arm64 \
     zlib1g-dev:arm64 libzstd-dev:arm64
 fi
 
