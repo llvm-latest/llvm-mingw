@@ -181,12 +181,13 @@ jobs:
           sudo dpkg --add-architecture arm64
           sudo apt-get update -qq
 
+          # Fix zlib1g-dev:arm64 install issue
           sudo apt-get install -y -o Dpkg::Use-Pty=0 \
-            linux-libc-dev:arm64 \
-            zlib1g-dev:arm64 libzstd-dev:arm64
+            linux-libc-dev:arm64
 
           sudo apt-get install -y -o Dpkg::Use-Pty=0 \
-            lsd gcc g++ clang
+            lsd gcc g++ clang \
+            zlib1g-dev:arm64 libzstd-dev:arm64
       - name: Verify toolchains
         run: |
           set -e
