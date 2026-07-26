@@ -243,7 +243,6 @@ for arch in $ARCHS; do
         ;;
     arm64ec)
         unset HAVE_UBSAN
-        unset HAVE_OPENMP
         RUN="$RUN_ARM64EC"
         COPY="$COPY_ARM64EC"
         NATIVE="$NATIVE_ARM64EC"
