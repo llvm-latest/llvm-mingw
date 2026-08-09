@@ -55,8 +55,13 @@ fi
 
 # Fix zlib1g-dev:arm64 install issue
 if [ -n "$WITH_ARM64" ]; then
-sudo apt-get install -y -o Dpkg::Use-Pty=0 \
-    linux-libc-dev:arm64
+sudo apt-get install -y -o Dpkg::Use-Pty=0 aptitude
+sudo aptitude install -y \
+    -o Aptitude::ProblemResolver::SolutionCost='10*downgrade, 100*new-package, 1000*remove, 10000*cancel' \
+    -o Aptitude::ProblemResolver::Keep-All-Solutions=true \
+    -o Aptitude::Auto-Install=true \
+    --without-recommends \
+    libc6-dev:arm64 linux-libc-dev:arm64
 fi
 
 # Install Essential Tools
